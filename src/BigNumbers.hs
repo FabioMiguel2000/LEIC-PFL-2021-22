@@ -22,3 +22,6 @@ subBN xs ys = scann (show (sum [x - y | (x,y) <- zip xs ys]))
 
 multBN :: BigNumbers -> BigNumbers -> BigNumbers
 multBN xs ys = scann (show (sum [x * y | (x,y) <- zip xs ys]))
+
+divBN :: BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
+divBN xs ys = (scann (show (sum [mod x y | (x,y) <- zip xs ys])),scann (show (sum [x `div` y | (x,y) <- zip xs ys])))
