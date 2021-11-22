@@ -13,3 +13,12 @@ dec2int a = foldl(\x y -> 10 * x + y) 0 a
 
 output :: BigNumbers -> String
 output xs = show (dec2int xs)
+
+somaBN :: BigNumbers -> BigNumbers -> BigNumbers
+somaBN xs ys = scann (show (sum [x + y | (x,y) <- zip xs ys]))
+
+subBN :: BigNumbers -> BigNumbers -> BigNumbers
+subBN xs ys = scann (show (sum [x - y | (x,y) <- zip xs ys]))
+
+multBN :: BigNumbers -> BigNumbers -> BigNumbers
+multBN xs ys = scann (show (sum [x * y | (x,y) <- zip xs ys]))
