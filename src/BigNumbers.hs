@@ -41,5 +41,8 @@ multBN xs ys = scann(show(x*y))
     x = read(output xs)::Int
     y = read(output ys)::Int
 
--- divBN :: BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
--- divBN xs ys = (scann (show (sum [mod x y | (x,y) <- zip xs ys])),scann (show (sum [x `div` y | (x,y) <- zip xs ys]))
+divBN :: BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
+divBN xs ys = (scann(show(mod x y)), scann(show(x`div`y)))
+    where
+    x = read(output xs)::Int
+    y = read(output ys)::Int
