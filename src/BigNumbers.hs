@@ -14,8 +14,13 @@ dec2int a = foldl(\x y -> 10 * x + y) 0 a
 output :: BigNumbers -> String
 output xs = show (dec2int xs)
 
-auxSoma :: BigNumbers -> BigNumbers -> BigNumbers
-auxSoma xs ys = zipWith (+) xs ys
+
+auxSoma :: Integral t => [t] -> [t] -> t -> [t]
+auxSoma [] [] 0 = []
+auxSoma [] [] 1 = [1]
+auxSoma (x:xs) (y:ys) n
+    | (sum[x,y,n]) < 10 = (x+y+n) : auxSoma xs ys 0
+    | otherwise = mod (x+y+n) 10 : auxSoma xs ys 1
 
 auxLenght :: BigNumbers -> Int 
 auxLenght xs = length xs
@@ -23,26 +28,26 @@ auxLenght xs = length xs
 --somaBN :: BigNumbers -> BigNumbers -> BigNumbers
 --somaBN xs ys =  map(\x -> if (mod x 10 >10) then mod x 10 if (mod x 10 == 10) then (mod x 10) +1 ) (zipWith (+) xs ys)
 
-somaBN :: BigNumbers -> BigNumbers -> BigNumbers
-somaBN xs ys = scann(show(sum [read x::Int,read y::Int]))
-    where
-    x = output xs
-    y = output ys
+-- somaBN :: BigNumbers -> BigNumbers -> BigNumbers
+-- somaBN xs ys = scann(show(sum [read x::Int,read y::Int]))
+--     where
+--     x = output xs
+--     y = output ys
 
-subBN :: BigNumbers -> BigNumbers -> BigNumbers
-subBN xs ys = scann(show(if x > y then x - y else (-1)*(y - x)))
-    where
-    x = read(output xs)::Int
-    y = read(output ys)::Int
+-- subBN :: BigNumbers -> BigNumbers -> BigNumbers
+-- subBN xs ys = scann(show(if x > y then x - y else (-1)*(y - x)))
+--     where
+--     x = read(output xs)::Int
+--     y = read(output ys)::Int
 
-multBN :: BigNumbers -> BigNumbers -> BigNumbers
-multBN xs ys = scann(show(x*y))
-    where
-    x = read(output xs)::Int
-    y = read(output ys)::Int
+-- multBN :: BigNumbers -> BigNumbers -> BigNumbers
+-- multBN xs ys = scann(show(x*y))
+--     where
+--     x = read(output xs)::Int
+--     y = read(output ys)::Int
 
-divBN :: BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
-divBN xs ys = (scann(show(mod x y)), scann(show(x`div`y)))
-    where
-    x = read(output xs)::Int
-    y = read(output ys)::Int
+-- divBN :: BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
+-- divBN xs ys = (scann(show(mod x y)), scann(show(x`div`y)))
+--     where
+--     x = read(output xs)::Int
+--     y = read(output ys)::Int
