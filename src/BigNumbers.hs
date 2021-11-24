@@ -19,10 +19,37 @@ dec2int a = foldl(\x y -> 10 * x + y) 0 a
 output :: BigNumbers -> String
 output xs = show (dec2int xs)
 
+auxSoma :: BigNumbers -> BigNumbers -> BigNumbers
+auxSoma xs ys = zipWith (+) xs ys
+
+auxLenght :: BigNumbers -> Int 
+auxLenght xs = length xs
+
+--somaBN :: BigNumbers -> BigNumbers -> BigNumbers
+--somaBN xs ys =  map(\x -> if (mod x 10 >10) then mod x 10 if (mod x 10 == 10) then (mod x 10) +1 ) (zipWith (+) xs ys)
+
 somaBN :: BigNumbers -> BigNumbers -> BigNumbers
 -- somaBN xs ys = scann (show (sum [x + y | (x,y) <- zip xs ys]))
 somaBN bn1 bn2 = revertMakeNeg (reverse (sumWithCarry (reverse (ifNegMakeNeg bn1)) (reverse (ifNegMakeNeg bn2)) 0 []))
 
+
+subBN :: BigNumbers -> BigNumbers -> BigNumbers
+-- subBN xs ys = scann (show (sum [x - y | (x,y) <- zip xs ys]))
+subBN bn1 bn2 =  [x - y| (x,y) <- zip bn1 bn2]
+
+multBN :: BigNumbers -> BigNumbers -> BigNumbers
+multBN xs ys = scann(show(x*y))
+    where
+    x = read(output xs)::Int
+    y = read(output ys)::Int
+
+divBN :: BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
+divBN xs ys = (scann(show(mod x y)), scann(show(x`div`y)))
+    where
+    x = read(output xs)::Int
+    y = read(output ys)::Int
+
+-- Aux functions
 makeNeg :: Num a => a -> a
 makeNeg n = -1*n
 
@@ -39,15 +66,3 @@ sumWithCarry [] [] carry res | carry ==  0 = res
                              | otherwise = res ++ [carry]
 sumWithCarry (x1:xs1) (x2:xs2) carry res | (x1 + x2 + carry) < 0 = sumWithCarry xs1 xs2 ((x1 + x2 + carry) `quot` 10) (res ++ [ ((x1 + x2 + carry) `mod` (-10))])
                                          | otherwise = sumWithCarry xs1 xs2 ((x1 + x2 + carry) `quot` 10) (res ++ [(x1 + x2 + carry) `mod` 10])
-
-
-
-subBN :: BigNumbers -> BigNumbers -> BigNumbers
--- subBN xs ys = scann (show (sum [x - y | (x,y) <- zip xs ys]))
-subBN bn1 bn2 =  [x - y| (x,y) <- zip bn1 bn2]
-
-multBN :: BigNumbers -> BigNumbers -> BigNumbers
-multBN xs ys = scann (show (sum [x * y | (x,y) <- zip xs ys]))
-
-divBN :: BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
-divBN xs ys = (scann (show (sum [mod x y | (x,y) <- zip xs ys])),scann (show (sum [x `div` y | (x,y) <- zip xs ys])))
