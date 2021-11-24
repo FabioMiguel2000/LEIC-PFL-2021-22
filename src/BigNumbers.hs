@@ -25,21 +25,7 @@ auxLenght xs = length xs
 
 somaBN :: BigNumbers -> BigNumbers -> BigNumbers
 -- somaBN xs ys = scann (show (sum [x + y | (x,y) <- zip xs ys]))
-somaBN bn1 bn2 = reverse (sumWithCarry (reverse (ifNegMakeNeg bn1)) (reverse (ifNegMakeNeg bn2)) [])
-
-makeNeg :: Num a => a -> a
-makeNeg n = -1*n
-
-ifNegMakeNeg :: BigNumbers -> BigNumbers
-ifNegMakeNeg (x:xs)
-    | x < 0 = x : map makeNeg xs
-    | otherwise = x:xs
-
-sumWithCarry :: BigNumbers-> BigNumbers -> BigNumbers -> BigNumbers
-sumWithCarry [] [] res = res
-sumWithCarry (x1:xs1) (x2:xs2) res 
-    | x1 + x2 > 10 || x1 + x2 < -10 = sumWithCarry xs1 xs2 (res++[(x1 + x2) `mod` 10] ++ [(x1 + x2) `div` 10])
-    | otherwise = sumWithCarry xs1 xs2 (res ++ [x1+x2])
+somaBN bn1 bn2 = reverse (sumWithCarry (reverse (ifNegMakeNeg bn1)) (reverse (ifNegMakeNeg bn2)) 0 [])
 
 subBN :: BigNumbers -> BigNumbers -> BigNumbers
 subBN xs ys = scann(show(if x > y then x - y else (-1)*(y - x)))
@@ -58,3 +44,17 @@ divBN xs ys = (scann(show(mod x y)), scann(show(x`div`y)))
     where
     x = read(output xs)::Int
     y = read(output ys)::Int
+-- Aux functions
+makeNeg :: Num a => a -> a
+makeNeg n = -1*n
+
+ifNegMakeNeg :: BigNumbers -> BigNumbers
+ifNegMakeNeg (x:xs) 
+    | x < 0 = x : map makeNeg xs
+    | otherwise = x:xs
+
+sumWithCarry :: BigNumbers-> BigNumbers -> Int -> BigNumbers  -> BigNumbers
+sumWithCarry [] [] carry res 
+    | carry ==  0 = res
+    | otherwise = res ++ [carry]
+sumWithCarry (x1:xs1) (x2:xs2) carry res  = sumWithCarry xs1 xs2 ((x1 + x2 + carry) `quot` 10) (res ++ [(x1 + x2 + carry) `mod` 10])
