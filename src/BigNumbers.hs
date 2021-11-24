@@ -24,10 +24,22 @@ auxLenght xs = length xs
 --somaBN xs ys =  map(\x -> if (mod x 10 >10) then mod x 10 if (mod x 10 == 10) then (mod x 10) +1 ) (zipWith (+) xs ys)
 
 somaBN :: BigNumbers -> BigNumbers -> BigNumbers
-somaBN xs ys = scann(show(sum [read x::Int,read y::Int]))
-    where
-    x = output xs
-    y = output ys
+-- somaBN xs ys = scann (show (sum [x + y | (x,y) <- zip xs ys]))
+somaBN bn1 bn2 = reverse (sumWithCarry (reverse (ifNegMakeNeg bn1)) (reverse (ifNegMakeNeg bn2)) [])
+
+makeNeg :: Num a => a -> a
+makeNeg n = -1*n
+
+ifNegMakeNeg :: BigNumbers -> BigNumbers
+ifNegMakeNeg (x:xs)
+    | x < 0 = x : map makeNeg xs
+    | otherwise = x:xs
+
+sumWithCarry :: BigNumbers-> BigNumbers -> BigNumbers -> BigNumbers
+sumWithCarry [] [] res = res
+sumWithCarry (x1:xs1) (x2:xs2) res 
+    | x1 + x2 > 10 || x1 + x2 < -10 = sumWithCarry xs1 xs2 (res++[(x1 + x2) `mod` 10] ++ [(x1 + x2) `div` 10])
+    | otherwise = sumWithCarry xs1 xs2 (res ++ [x1+x2])
 
 subBN :: BigNumbers -> BigNumbers -> BigNumbers
 subBN xs ys = scann(show(if x > y then x - y else (-1)*(y - x)))
