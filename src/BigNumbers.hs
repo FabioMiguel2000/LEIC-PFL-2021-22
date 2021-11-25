@@ -1,3 +1,4 @@
+import Graphics.Rendering.OpenGL (rescaleNormal)
 type BigNumbers = [Int]
 
 -- data BigNumbers = BigNumbers [Int]
@@ -32,16 +33,8 @@ somaBN bn1 bn2 = revertMakeNeg (reverse (sumWithCarry (reverse (ifNegMakeNeg bn1
 subBN :: BigNumbers -> BigNumbers -> BigNumbers
 subBN bn1 bn2 = revertMakeNeg (reverse (subWithCarry (reverse (ifNegMakeNeg bn1)) (reverse (ifNegMakeNeg bn2)) 0 []))
 
--- subBN :: BigNumbers -> BigNumbers -> BigNumbers
--- subBN xs ys = scann (show (sum [x - y | (x,y) <- zip xs ys]))
--- subBN bn1 bn2 =  [x - y| (x,y) <- zip bn1 bn2]
-
-
-multBN :: BigNumbers -> BigNumbers -> BigNumbers
-multBN xs ys = scann(show(x*y))
-    where
-    x = read(output xs)::Int
-    y = read(output ys)::Int
+-- multBN :: BigNumbers -> BigNumbers -> BigNumbers
+-- multBN bn1 bn2 = revertMakeNeg (reverse (multWithCarry (reverse (ifNegMakeNeg bn1)) (reverse (ifNegMakeNeg bn2)) 0 []))
 
 divBN :: BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
 divBN xs ys = (scann(show(mod x y)), scann(show(x`div`y)))
@@ -62,8 +55,7 @@ revertMakeNeg (x:xs)
     | x < 0 = x : map abs xs
     | otherwise = x:xs
 
-sumWithCarry :: BigNumbers-> BigNumbers -> Int -> BigNumbers  -> BigNumbers
-
+sumWithCarry :: BigNumbers -> BigNumbers -> Int -> BigNumbers  -> BigNumbers
 sumWithCarry [] [] carry res 
     | carry ==  0 = res
     | otherwise = res ++ [carry]
@@ -71,9 +63,22 @@ sumWithCarry (x1:xs1) (x2:xs2) carry res
     | (x1 + x2 + carry) < 0 = sumWithCarry xs1 xs2 ((x1 + x2 + carry) `quot` 10) (res ++ [ ((x1 + x2 + carry) `mod` (-10))])
     | otherwise = sumWithCarry xs1 xs2 ((x1 + x2 + carry) `quot` 10) (res ++ [(x1 + x2 + carry) `mod` 10])
 
+sumWithCarrySingleton :: BigNumbers -> Int -> BigNumbers  -> BigNumbers
+sumWithCarrySingleton [] carry res
+    | carry == 0 = res
+    | otherwise = res ++ [carry]
+sumWithCarrySingleton (x:xs) carry res
+    | (x + carry) < 0 = sumWithCarrySingleton xs ((x + carry) `quot` 10) (res ++ [(x + carry) `mod` (-10)])
+    | otherwise  =  sumWithCarrySingleton xs ((x + carry) `quot` 10) (res ++ [(x + carry) `mod` 10])
+
+
 subWithCarry [] [] carry res 
     | carry ==  0 = res
     | otherwise = res ++ [carry]
 subWithCarry (x1:xs1) (x2:xs2) carry res 
     | (x1 - x2 + carry) < 0 = subWithCarry xs1 xs2 ((x1 - x2 + carry) `quot` 10) (res ++ [ ((x1 - x2 + carry) `mod` (-10))])
     | otherwise = subWithCarry xs1 xs2 ((x1 - x2 + carry) `quot` 10) (res ++ [(x1 - x2 + carry) `mod` 10])
+
+
+multiplyElements :: BigNumbers -> BigNumbers -> [BigNumbers]
+multiplyElements = flip (map . flip (map . (*)))
