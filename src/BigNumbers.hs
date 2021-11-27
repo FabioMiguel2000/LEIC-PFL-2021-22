@@ -1,4 +1,3 @@
-import Graphics.Rendering.OpenGL (rescaleNormal)
 type BigNumbers = [Int]
 
 -- data BigNumbers = BigNumbers [Int]
@@ -85,4 +84,4 @@ multiplyElements = flip (map . flip (map . (*)))
 -- (somaBN (reverse(drop 1 (reverse[1,3,6,8 ]))) (reverse [2,1,9]))++[(head(reverse [1,3,6,8]))]
 
 --If the diference between the lists to be summed is equal to 2:
--- [head(reverse[2,1,3,1])]++(somaBN (reverse(drop 1 (reverse[1,3,6,8 ]))) (drop 1 (reverse [2,1,3,1])))++[(head(reverse [1,3,6,8]))]
+-- [head(reverse[2,1,3,1])]++(somaBN (reverse(drop 1 (reverse[1,3,6,8 ]))) (drop 1 (reverse [2,1,3,1])))++[(head(reverse [1,3,6,8]))]8
