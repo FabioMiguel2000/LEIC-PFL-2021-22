@@ -71,6 +71,8 @@ sumWithCarry (x1:xs1) (x2:xs2) carry res
     | (x1 + x2 + carry) < 0 = sumWithCarry xs1 xs2 ((x1 + x2 + carry) `quot` 10) (res ++ [ ((x1 + x2 + carry) `mod` (-10))])
     | otherwise = sumWithCarry xs1 xs2 ((x1 + x2 + carry) `quot` 10) (res ++ [(x1 + x2 + carry) `mod` 10])
 
+
+subWithCarry :: BigNumbers-> BigNumbers -> Int -> BigNumbers  -> BigNumbers
 subWithCarry [] [] carry res 
     | carry ==  0 = res
     | otherwise = res ++ [carry]
