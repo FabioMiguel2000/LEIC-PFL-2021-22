@@ -85,6 +85,9 @@ sumMy :: BigNumbers -> BigNumbers
 sumMy xs = reverse(sumWithCarrySingleton (reverse(xs)) 0 [])
 
 
+multBN xs ys= func sumMy (multiplyElements ys xs)
+
+
 -- treatMultiply::[[BigNumbers]] -> [[BigNumbers]]
 --treatMultiply [[]] = [[]]
 -- treatMultiply :: [[BigNumbers]] -> [[BigNumbers]]
@@ -101,6 +104,3 @@ multiSumTwo l1 l2
     | ((length (l1))-(length (l2)) > 0) = (somaBN (reverse(drop 1(reverse(l1)))) (l2)) ++ [head(reverse(l1))]
     | ((length (l1))-(length (l2)) < 0) = (somaBN (0:(0:(reverse(drop 1(reverse(l1)))))) (l2)) ++ [head(reverse(l1))]
     | otherwise = (somaBN (0:(reverse(drop 1(reverse(l1))))) (l2)) ++ [head(reverse(l1))]
-
-
-
