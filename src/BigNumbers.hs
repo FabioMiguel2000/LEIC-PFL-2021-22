@@ -197,3 +197,4 @@ multiSumTwo l1 l2
     | ((length (l1))-(length (l2)) > 0) = (somaBN (reverse(drop 1(reverse(l1)))) (l2)) ++ [head(reverse(l1))]
     | ((length (l1))-(length (l2)) < 0) = (somaBN (0:(0:(reverse(drop 1(reverse(l1)))))) (l2)) ++ [head(reverse(l1))]
     | otherwise = (somaBN (0:(reverse(drop 1(reverse(l1))))) (l2)) ++ [head(reverse(l1))]
+
