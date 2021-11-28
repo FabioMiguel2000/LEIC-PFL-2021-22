@@ -65,12 +65,6 @@ safeDivBN bn1 bn2
 
 ----------------------------- Aux functions -----------------------------------------
 
-auxSoma :: BigNumber -> BigNumber -> BigNumber
-auxSoma = zipWith (+)
-
-auxLenght :: BigNumber -> Int
-auxLenght = length
-
 
 removeLeadingZeros :: BigNumber -> BigNumber
 removeLeadingZeros [0]
