@@ -1,6 +1,7 @@
 module Fib where
 
 import BigNumbers
+import Distribution.Simple.Utils (xargs)
 
 {-
 Alinea 1.1  Fibonacci Funcao Recursiva
