@@ -118,6 +118,8 @@ subBN bn1 bn2 = somaBN bn1 (changeSign bn2)
 A função mulBN, para multiplicar dois big-numbers.
 
 Para atingir o resultado esperada primeiro utilizo a função mulItems que cria uma lista de listas cuja cada item de cada lista é o resultado da multiplicação inteira de um número pelo outro conforme uma multiplicação do primário.
+
+
 ![mult_exemple](images/mult_example.png)
 
 ex:
