@@ -1,6 +1,6 @@
 module Fib where
 
-import BigNumbers
+import BigNumber
 
 {-
 Alinea 1.1  Fibonacci Funcao Recursiva
@@ -25,12 +25,12 @@ Alinea 1.3  Fibonacci Lista Infinita
 fibListaInfinita :: Num a => Int -> a
 fibListaInfinita n = listaInfinita !! n
                 where listaInfinita  = 0 : 1 : [a + b| (a,b)<- zip listaInfinita (tail listaInfinita)] --lista infinita com todos os números de Fibonacci
-fib n = take n . map head $ iterate (\(x:y:xs) -> (x+y):x:xs) [0,1]
+-- fib n = take n . map head $ iterate (\(x:y:xs) -> (x+y):x:xs) [0,1]
 
 {-
-Alínea 3 Fibonacci Recursive BigNumbers
+Alínea 3 Fibonacci Recursive BigNumber
 -}
-fibRecBN ::Int -> BigNumbers 
+fibRecBN ::Int -> BigNumber 
 fibRecBN 0 = [0]
 fibRecBN 1 = [1]
 fibRecBN n = somaBN (fibRecBN (n-2))  (fibRecBN (n-1))
@@ -38,8 +38,14 @@ fibRecBN n = somaBN (fibRecBN (n-2))  (fibRecBN (n-1))
 {-
 Alínea 3 Fibonacci Programacao Dinamica
 -}
-fibListaBN :: Int -> BigNumbers 
+fibListaBN :: Int -> BigNumber 
 fibListaBN 0 = [0]
 fibListaBN 1 = [1]
 fibListaBN n  = somaBN (fibs !! (n-1)) (fibs !! (n-2)) where
   fibs = map fibListaBN [0..]
+
+
+
+
+
+
