@@ -1,4 +1,6 @@
 
+import BigNumbers
+
 {-
 Alinea 1.1  Fibonacci Funcao Recursiva
 -}
@@ -29,4 +31,5 @@ Alinea 1.3  Fibonacci Lista Infinita
 fibListaInfinita :: Num a => Int -> a
 fibListaInfinita n = listaInfinita !! n
                 where listaInfinita  = 0 : 1 : [a + b| (a,b)<- zip listaInfinita (tail listaInfinita)] --lista infinita com todos os números de Fibonacci
+
 

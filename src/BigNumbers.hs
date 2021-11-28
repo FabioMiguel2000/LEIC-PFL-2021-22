@@ -51,8 +51,8 @@ divBN bn1 [0]
 divBN bn1 bn2 
     | not (checkIfNegative bn1) && not (checkIfNegative bn2) = divPosPos bn1 bn2 [0] [0]
     | checkIfNegative bn1 && checkIfNegative bn2 = divNegNeg bn1 bn2 [0] [0]
-    | not (checkIfNegative bn1) && checkIfNegative bn2 = divPosPos (changeSign bn1) (changeSign bn2) [0] [0]
-    | otherwise  = divPosPos (changeSign bn1) (changeSign bn2) [0] [0]
+    | not (checkIfNegative bn1) && checkIfNegative bn2 = divPosNeg bn1 bn2 [0] [0]
+    | otherwise  = divNegPos bn1 bn2 [0] [0]
 
 
 --     where
@@ -78,8 +78,8 @@ divNegNeg bn1 bn2 quotient remainder
 
 divNegPos :: BigNumbers -> BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
 divNegPos bn1 bn2 quotient remainder          
-    | not (checkIfNegative (subBN bn1 bn2)) = (quotient, bn1)
-    | otherwise = divNegPos (subBN bn1 bn2) bn2 (somaBN quotient [-1]) remainder
+    | not (checkIfNegative (somaBN bn1 bn2)) = (quotient, bn1)
+    | otherwise = divNegPos (somaBN bn1 bn2) bn2 (somaBN quotient [-1]) remainder
 
 divPosNeg :: BigNumbers -> BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
 divPosNeg bn1 bn2 quotient remainder          
@@ -184,7 +184,13 @@ multiplyElements = flip (map . flip (map . (*)))
 sumMy :: BigNumbers -> BigNumbers
 sumMy xs = reverse(sumWithCarrySingleton (reverse(xs)) 0 [])
 
-multBN xs ys= map sumMy (multiplyElements ys xs)
+multBN xs ys
+    | checkIfNegative xs && checkIfNegative ys = auxMult (map sumMy (multiplyElements ys xs)) [0]
+    | not (checkIfNegative xs) && not (checkIfNegative ys) = auxMult (map sumMy (multiplyElements ys xs)) [0]
+    | checkIfNegative xs && not (checkIfNegative ys) = changeSign (removeLeadingZeros (auxMult (map sumMy (multiplyElements ys (changeSign xs))) [0]))
+    | otherwise = changeSign (removeLeadingZeros (auxMult (map sumMy (multiplyElements (changeSign ys) xs)) [0]))
+
+
 
 -- If the diference between the lists to be summed is equal 1:
 -- (somaBN (reverse(drop 1 (reverse[1,3,6,8 ]))) (reverse [2,1,9]))++[(head(reverse [1,3,6,8]))]
@@ -197,3 +203,7 @@ multiSumTwo l1 l2
     | ((length (l1))-(length (l2)) > 0) = (somaBN (reverse(drop 1(reverse(l1)))) (l2)) ++ [head(reverse(l1))]
     | ((length (l1))-(length (l2)) < 0) = (somaBN (0:(0:(reverse(drop 1(reverse(l1)))))) (l2)) ++ [head(reverse(l1))]
     | otherwise = (somaBN (0:(reverse(drop 1(reverse(l1))))) (l2)) ++ [head(reverse(l1))]
+
+auxMult :: [BigNumbers] -> BigNumbers -> BigNumbers
+auxMult [] res = res
+auxMult (x:xs) res = auxMult xs (multiSumTwo x res)
