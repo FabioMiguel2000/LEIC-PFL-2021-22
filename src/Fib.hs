@@ -27,6 +27,10 @@ fibListaInfinita n = listaInfinita !! n
     where listaInfinita  = 0 : 1 : [a + b| (a,b)<- zip listaInfinita (tail listaInfinita)] --lista infinita com todos os números de Fibonacci
 --fib n = take n . map head $ iterate (\(x:y:xs) -> (x+y):x:xs) [0,1]
 
+
+--------------- Big Number ------------------
+
+
 {-
 Alínea 3 Fibonacci Recursive BigNumber
 -}
@@ -41,8 +45,8 @@ Alínea 3 Fibonacci Programacao Dinamica
 fibListaBN :: BigNumber -> BigNumber
 fibListaBN [0] = [0]
 fibListaBN [1] = [1]
-fibListaBN n  = somaBN (indexer fibs (subBN n [2])) (indexer fibs (subBN n [2])) where
-  fibs = map fibListaBN 
+fibListaBN n  = somaBN (indexer fibs (subBN n [1])) (indexer fibs (subBN n [2])) where
+  fibs = map fibListaBN listBN
 
 {-
 Alínea 3 Fibonacci Lista Infinita
@@ -51,8 +55,14 @@ fibListaInfinitaBN :: BigNumber -> BigNumber
 fibListaInfinitaBN = indexer listaInfinita
     where listaInfinita  = [0] : [1] : [somaBN a  b| (a,b)<- zip listaInfinita (tail listaInfinita)]
 
+
+--------------------- aux ------------------------
+
 fibBN :: [BigNumber]
 fibBN = [0] : [1] : zipWith somaBN fibBN (tail fibBN)
+
+listBN :: [BigNumber]
+listBN = iterate (\x -> somaBN x [1]) [0]
 
 indexer :: [BigNumber] -> BigNumber-> BigNumber
 indexer (x:xs) [0] = x
