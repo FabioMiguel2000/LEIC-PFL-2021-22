@@ -2,18 +2,13 @@ module BigNumber where
 
 type BigNumber = [Int]
 
--- instance Show BigNumber where
- --   show (BigNumber n) = show (n)
-
 -- Converte string para BigNumber
 scann :: String  -> BigNumber
 scann n = map(`mod` 10) $ reverse $ takeWhile (> 0) $ iterate (`div`10) (read n::Int)
 
-
 -- Converte BigNumber para numeros inteiros
 dec2int :: [Int] -> Int
 dec2int = foldl(\x y -> 10 * x + y) 0
-
 
 -- Converte BigNumber para String
 output :: BigNumber -> String
@@ -183,13 +178,6 @@ sumMy xs = reverse(sumWithCarrySingleton (reverse xs) 0 [])
 
 auxMult :: [BigNumber] -> BigNumber -> BigNumber
 auxMult xs res = foldl (flip multiSumTwo) res xs
-
-
--- If the diference between the lists to be summed is equal 1:
--- (somaBN (reverse(drop 1 (reverse[1,3,6,8 ]))) (reverse [2,1,9]))++[(head(reverse [1,3,6,8]))]
-
---If the diference between the lists to be summed is equal to 2:
--- [head(reverse[2,1,3,1])]++(somaBN (reverse(drop 1 (reverse[1,3,6,8 ]))) (drop 1 (reverse [2,1,3,1])))++[(head(reverse [1,3,6,8]))]8
 
 multiSumTwo :: BigNumber -> BigNumber -> BigNumber
 multiSumTwo l1 l2
