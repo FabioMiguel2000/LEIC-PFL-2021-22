@@ -174,13 +174,6 @@ multiplyElements = flip (map . flip (map . (*)))
 sumMy :: BigNumbers -> BigNumbers
 sumMy xs = reverse(sumWithCarrySingleton (reverse(xs)) 0 [])
 
-multBN :: BigNumbers -> BigNumbers -> BigNumbers
-multBN xs ys
-    | checkIfNegative xs && checkIfNegative ys = auxMult (map sumMy (multiplyElements ys xs)) [0]
-    | not (checkIfNegative xs) && not (checkIfNegative ys) = auxMult (map sumMy (multiplyElements ys xs)) [0]
-    | checkIfNegative xs && not (checkIfNegative ys) = changeSign (removeLeadingZeros (auxMult (map sumMy (multiplyElements ys (changeSign xs))) [0]))
-    | otherwise = changeSign (removeLeadingZeros (auxMult (map sumMy (multiplyElements (changeSign ys) xs)) [0]))
-
 auxMult :: [BigNumbers] -> BigNumbers -> BigNumbers
 auxMult [] res = res
 auxMult (x:xs) res = auxMult xs (multiSumTwo x res)

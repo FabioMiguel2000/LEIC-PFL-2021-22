@@ -43,3 +43,8 @@ fibListaBN 0 = [0]
 fibListaBN 1 = [1]
 fibListaBN n  = somaBN (fibs !! (n-1)) (fibs !! (n-2)) where
   fibs = map fibListaBN [0..]
+
+{-
+Alínea 3 Fibonacci Lista Infinita
+-}
+
