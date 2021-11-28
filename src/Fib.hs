@@ -1,7 +1,6 @@
 module Fib where
 
-import BigNumbers
-import Distribution.Simple.Utils (xargs)
+import BigNumber
 
 {-
 Alinea 1.1  Fibonacci Funcao Recursiva
@@ -17,7 +16,7 @@ Alinea 1.2  Fibonacci Programacao Dinamica
 fibLista :: Num p => Int -> p
 fibLista 0 = 0
 fibLista 1 = 1
-fibLista n  = (fibs !! (n-1)) + (fibs !! (n-2)) where
+fibLista n  = fibs !! (n-1) + fibs !! (n-2) where
   fibs = map fibLista [0..]
 
 {-
@@ -29,25 +28,32 @@ fibListaInfinita n = listaInfinita !! n
 --fib n = take n . map head $ iterate (\(x:y:xs) -> (x+y):x:xs) [0,1]
 
 {-
-Alínea 3 Fibonacci Recursive BigNumbers
+Alínea 3 Fibonacci Recursive BigNumber
 -}
-fibRecBN ::Int -> BigNumbers 
-fibRecBN 0 = [0]
-fibRecBN 1 = [1]
-fibRecBN n = somaBN (fibRecBN (n-2))  (fibRecBN (n-1))
+fibRecBN ::BigNumber -> BigNumber
+fibRecBN [0] = [0]
+fibRecBN [1] = [1]
+fibRecBN n = somaBN (fibRecBN (subBN n [2]))  (fibRecBN (subBN n [1]))
 
 {-
 Alínea 3 Fibonacci Programacao Dinamica
 -}
-fibListaBN :: Int -> BigNumbers 
-fibListaBN 0 = [0]
-fibListaBN 1 = [1]
-fibListaBN n  = somaBN (fibs !! (n-1)) (fibs !! (n-2)) where
-  fibs = map fibListaBN [0..]
+fibListaBN :: BigNumber -> BigNumber
+fibListaBN [0] = [0]
+fibListaBN [1] = [1]
+fibListaBN n  = somaBN (indexer fibs (subBN n [2])) (indexer fibs (subBN n [2])) where
+  fibs = map fibListaBN 
 
 {-
 Alínea 3 Fibonacci Lista Infinita
 -}
-fibListaInfinitaBN :: Int -> BigNumbers 
-fibListaInfinitaBN n = scann (show (listaInfinita !! n))
-    where listaInfinita  = 0 : 1 : [a + b| (a,b)<- zip listaInfinita (tail listaInfinita)] 
+fibListaInfinitaBN :: BigNumber -> BigNumber
+fibListaInfinitaBN = indexer listaInfinita
+    where listaInfinita  = [0] : [1] : [somaBN a  b| (a,b)<- zip listaInfinita (tail listaInfinita)]
+
+fibBN :: [BigNumber]
+fibBN = [0] : [1] : zipWith somaBN fibBN (tail fibBN)
+
+indexer :: [BigNumber] -> BigNumber-> BigNumber
+indexer (x:xs) [0] = x
+indexer (x:xs) n = indexer  xs (subBN n [1])
