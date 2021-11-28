@@ -30,7 +30,7 @@ fibListaInfinita n = listaInfinita !! n
 {-
 Alínea 3 Fibonacci Recursive BigNumber
 -}
-fibRecBN ::Int -> BigNumber 
+fibRecBN ::Int -> BigNumber
 fibRecBN 0 = [0]
 fibRecBN 1 = [1]
 fibRecBN n = somaBN (fibRecBN (n-2))  (fibRecBN (n-1))
@@ -38,7 +38,7 @@ fibRecBN n = somaBN (fibRecBN (n-2))  (fibRecBN (n-1))
 {-
 Alínea 3 Fibonacci Programacao Dinamica
 -}
-fibListaBN :: Int -> BigNumber 
+fibListaBN :: Int -> BigNumber
 fibListaBN 0 = [0]
 fibListaBN 1 = [1]
 fibListaBN n  = somaBN (fibs !! (n-1)) (fibs !! (n-2)) where
@@ -49,4 +49,7 @@ Alínea 3 Fibonacci Lista Infinita
 -}
 fibListaInfinitaBN :: Int -> BigNumber
 fibListaInfinitaBN n = scann (show (listaInfinita !! n))
-    where listaInfinita  = 0 : 1 : [a + b| (a,b)<- zip listaInfinita (tail listaInfinita)] 
+    where listaInfinita  = 0 : 1 : [a + b| (a,b)<- zip listaInfinita (tail listaInfinita)]
+
+fibBN :: [BigNumber]
+fibBN = [0] : [1] : zipWith somaBN fibBN (tail fibBN)
