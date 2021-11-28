@@ -53,7 +53,7 @@ module BigNumber where
 
 type BigNumber = [Int]
 ```
-##### 2.2
+##### 2.2)
 A função scanner, que converte uma string em `BigNumber`. O seu tipo é: 
 `String -> BigNumber`
 ```
@@ -62,7 +62,7 @@ scann :: String  -> BigNumber
 scann n = map(`mod` 10) $ reverse $ takeWhile (> 0) $ iterate (`div`10) (read n::Int)
 ```
 
-##### 2.3
+##### 2.3)
 A função output, que converte um `BigNumber` em string. O seu tipo é: 
 `BigNumber -> String`
 ```
@@ -106,14 +106,16 @@ somaBN bn1 bn2
     | otherwise = removeLeadingZeros (reverse (subPosPos (reverse bn2) (reverse (changeSign bn1)) 0 [])) -- negativo + positivo, abs(negativo) < abs(positivo)
 
 ```
-##### 2.5) A função subBN, para subtrair dois big-numbers.
+##### 2.5) 
+A função subBN, para subtrair dois big-numbers.
 Usar a função `somaBN`, só mudando o sinal do segundo parametro de subtração com a função `changeSign`.
 ```
 -- Subtraçao entre dois BigNumber
 subBN :: BigNumber -> BigNumber -> BigNumber
 subBN bn1 bn2 = somaBN bn1 (changeSign bn2)
 ```
-#### 2.6) A função mulBN, para multiplicar dois big-numbers.
+#### 2.6) 
+A função mulBN, para multiplicar dois big-numbers.
 
 Para atingir o resultado esperada primeiro utilizo a função mulItems que cria uma lista de listas cuja cada item de cada lista é o resultado da multiplicação inteira de um número pelo outro conforme uma multiplicação do primário.
 ![mult_exemple](images/mult_example.png)
@@ -145,7 +147,8 @@ mulBN [-2] [1,0]
 ```
 
 
-##### 2.7) A função divBN, para efetuar a divisão inteira de dois big-numbers. 
+##### 2.7) 
+A função divBN, para efetuar a divisão inteira de dois big-numbers. 
 Foi dividido em 4 casos diferentes:
 - 2 numeros positivos
 - 2 numeros negativos
