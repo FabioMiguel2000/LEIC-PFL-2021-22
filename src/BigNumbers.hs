@@ -1,3 +1,6 @@
+
+module BigNumbers where
+
 type BigNumbers = [Int]
 
 -- data BigNumbers = BigNumbers [Int]
@@ -184,6 +187,7 @@ multiplyElements = flip (map . flip (map . (*)))
 sumMy :: BigNumbers -> BigNumbers
 sumMy xs = reverse(sumWithCarrySingleton (reverse(xs)) 0 [])
 
+multBN :: BigNumbers -> BigNumbers -> BigNumbers
 multBN xs ys
     | checkIfNegative xs && checkIfNegative ys = auxMult (map sumMy (multiplyElements ys xs)) [0]
     | not (checkIfNegative xs) && not (checkIfNegative ys) = auxMult (map sumMy (multiplyElements ys xs)) [0]
