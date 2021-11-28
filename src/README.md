@@ -122,7 +122,7 @@ divBN bn1 bn2
     | otherwise  = divNegPos bn1 bn2 [0]
 ```
 
-##### 3)
+### Terceira parte
 
 versão das três funções da alínea 1 que trabalhe com big-numbers.
 
