@@ -1,5 +1,3 @@
-import GHC.Real (infinity)
--- import Graphics.Rendering.OpenGL (rescaleNormal)
 type BigNumbers = [Int]
 
 -- data BigNumbers = BigNumbers [Int]
@@ -65,7 +63,9 @@ divBN bn1 bn2
 -- bigNumbersToInt bn = foldl (\ x y -> x * 10 + y) 0 bn
 
 
+
 -- remainder = dividend - (divisor * quotient)
+-- dividend = (divisor * quotient) + remainder
 divPosPos :: BigNumbers -> BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
 divPosPos bn1 bn2 quotient remainder          
     | checkIfNegative (subBN bn1 bn2) = (quotient, bn1)
@@ -76,8 +76,15 @@ divNegNeg bn1 bn2 quotient remainder
     | not (checkIfNegative (subBN bn1 bn2)) = (quotient, bn1)
     | otherwise = divNegNeg (subBN bn1 bn2) bn2 (somaBN quotient [1]) remainder
 
+divNegPos :: BigNumbers -> BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
+divNegPos bn1 bn2 quotient remainder          
+    | not (checkIfNegative (subBN bn1 bn2)) = (quotient, bn1)
+    | otherwise = divNegPos (subBN bn1 bn2) bn2 (somaBN quotient [-1]) remainder
 
-
+divPosNeg :: BigNumbers -> BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
+divPosNeg bn1 bn2 quotient remainder          
+    | checkIfNegative (somaBN bn1 bn2) = (quotient, bn1)
+    | otherwise = divPosNeg (somaBN bn1 bn2) bn2 (somaBN quotient [-1]) remainder
 
 -- Aux functions
 
@@ -165,19 +172,6 @@ sumWithCarrySingleton (x:xs) carry res
     | (x + carry) < 0 = sumWithCarrySingleton xs ((x + carry) `quot` 10) (res ++ [(x + carry) `mod` (-10)])
     | otherwise  =  sumWithCarrySingleton xs ((x + carry) `quot` 10) (res ++ [(x + carry) `mod` 10])
 
--- subWithCarry :: BigNumbers -> BigNumbers -> Int -> BigNumbers  -> BigNumbers
--- subWithCarry [] (x:xs) carry res
---     | (carry - x) < 0 = subWithCarry [] xs ((carry - x) `quot` 10) (res ++ [ ((carry - x) `mod` (-10))])
---     | otherwise = subWithCarry [] xs ((carry - x) `quot` 10) (res ++ [(carry - x) `mod` 10])
--- subWithCarry (x:xs) [] carry res
---     | (carry - x) < 0 = subWithCarry [] xs ((carry - x) `quot` 10) (res ++ [ ((carry - x) `mod` (-10))])
---     | otherwise = subWithCarry [] xs ((carry - x) `quot` 10) (res ++ [(carry - x) `mod` 10])
--- subWithCarry [] [] carry res
---     | carry ==  0 = res
---     | otherwise = res ++ [carry]
--- subWithCarry (x1:xs1) (x2:xs2) carry res
---     | (x1 - x2 + carry) < 0 = subWithCarry xs1 xs2 ((x1 - x2 + carry) `quot` 10) (res ++ [ ((x1 - x2 + carry) `mod` (-10))])
---     | otherwise = subWithCarry xs1 xs2 ((x1 - x2 + carry) `quot` 10) (res ++ [(x1 - x2 + carry) `mod` 10])
 
 
 multiplyElements :: BigNumbers -> BigNumbers -> [BigNumbers]
