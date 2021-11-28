@@ -92,7 +92,7 @@ As 2 funções principais que foram usadas para calcular as somas dos casos refe
 Basta estas 2 funções para conseguir calcular os 6 casos mencionados, mudando o sinal e a ordem de entrada
 Exemplo:
 
-![exemplo](images/fig1.drawio.png)
+![exemplo](images/somaBNExemple.drawio.png)
 
 ```
 -- Soma de dois BigNumber
