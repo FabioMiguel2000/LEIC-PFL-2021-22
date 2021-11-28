@@ -1,5 +1,6 @@
+module BigNumbers where
 
--- data BigNumbers = BigNumbers [Int]
+type BigNumbers = [Int]
 
 -- instance Show BigNumbers where
  --   show (BigNumbers n) = show (n)
