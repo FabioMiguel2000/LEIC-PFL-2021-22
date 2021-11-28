@@ -178,4 +178,3 @@ multiSumTwo l1 l2
     | length l1-length l2 > 0 = somaBN (reverse(drop 1(reverse l1))) l2 ++ [last l1]
     | length l1-length l2 < 0 = somaBN (0:(0:reverse(drop 1(reverse l1)))) l2 ++ [last l1]
     | otherwise = somaBN (0:reverse(drop 1(reverse l1))) l2 ++ [last l1]
-
