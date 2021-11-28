@@ -1,10 +1,10 @@
 ##  Trabalho Prático PFL 1
 
-### Primeira parte
+### Primeira Parte
 
 #### [Fib.hs](Fib.hs)
 
-##### 1.1)
+#### 1.1)
 Uma função recursiva, fibRec;
 O tipo desta função é: fibRec :: (Integral a) => a -> a
 ```
@@ -14,7 +14,7 @@ fibRec 1 = 1
 fibRec n = fibRec (n-2) +fibRec (n-1)
 ```
 
-##### 1.2)
+#### 1.2)
 Crie uma versão otimizada da função anterior, chamada fibLista, usando uma lista de
 resultados parciais tal que (lista !! i) contém o número de Fibonacci de ordem i
 (programação dinâmica).
@@ -26,7 +26,7 @@ fibLista n  = fibs !! (n-1) + fibs !! (n-2) where
   fibs = map fibLista [0..]
 ```
 
-##### 1.3)
+#### 1.3)
 Implemente outra versão, chamada fibListaInfinita, para gerar uma lista infinita com
 todos os números de Fibonacci e retornar o elemento de ordem n.
 ```
@@ -35,7 +35,7 @@ fibListaInfinita n = listaInfinita !! n
     where listaInfinita  = 0 : 1 : [a + b| (a,b)<- zip listaInfinita (tail listaInfinita)] --lista infinita com todos os números de Fibonacci
 ```
 
-### Segunda parte
+### Segunda Parte
 
 #### [BigNumber.hs](BigNumber.hs)
 
@@ -75,7 +75,19 @@ output xs = show (dec2int xs)
 ```
 
 ##### 2.4) A função somaBN, para somar dois big-numbers.
+##### Esta função é dividida em 6 casos seguintes:
+    - Soma entre 2 positivos
+    - Soma entre 2 negativos
+    - Soma entre 1 positivo e 1 negativo, onde o abs(|positivo|) > abs(|negativo|)
+    - Soma entre 1 positivo e 1 negativo, onde o abs(|positivo|) < abs(|negativo|)
+    - Soma entre 1 negativo e 1 positivo, onde o abs(|negativo|) > abs(|positivo|)
+    - Soma entre 1 negativo e 1 positivo, onde o abs(|negativo|) < abs(|positivo|)
 
+As 2 funcoes principais que foram usadas para calcular as somas dos casos referidos sao:
+    - subPosPos, que faz a subtracao entre 2 numeros positivos, onde o primeiro tem valor absoluta maior que o segundo
+    - somaPosPos, que faz a soma entre 2 numeros positivos
+Basta estas 2 funcoes para conseguir calcular os 6 casos diferentes, mudando o sinal e a ordem de entrada
+Aqui 
 ```
 -- Soma de dois BigNumber
 somaBN :: BigNumber -> BigNumber -> BigNumber
@@ -95,18 +107,35 @@ somaBN bn1 bn2
 subBN :: BigNumber -> BigNumber -> BigNumber
 subBN bn1 bn2 = somaBN bn1 (changeSign bn2)
 ```
-##### 2.6) A função mulBN, para multiplicar dois big-numbers.
+#### 2.6) A função mulBN, para multiplicar dois big-numbers.
 
+Para atingir o resultado esperada primeiro utilizo a função mulItems que cria uma lista de listas cuja cada item de cada lista é o resultado da multiplicação inteira de um número pelo outro.
+ex:
+mulItems [9,2] [3,4,5] retorna algo como [[6,8,10],[27,36,45]]. 
+Em seguida essa lista de listas é tratada para que cada lista interna seja composta por um BigNumber, para tal é utilizada a função auxiliar sumWithCarry singleton.
+Tendo a lista tratada utilizamos mais duas funções auxiliares em conjunto. multSumTwo que faza soma entre dois números acrescentando zeros ao início do menor número esta função utiliza a somaBN. A segunda função é auxMult que aplica a multSumtTwo a minha lista de listas tratadas.
+Também trabalhamos o sinal dos BigNumbers a multiplicar com funções auxiliares checkIfNegative e changeSign.
 ```
 -- Multiplicaçao de dois BigNumber
-multBN :: BigNumber -> BigNumber -> BigNumber
-multBN xs ys
+mulBN :: BigNumber -> BigNumber -> BigNumber
+mulBN xs ys
     | checkIfNegative xs && checkIfNegative ys = auxMult (map sumMy (multiplyElements ys xs)) [0]
     | not (checkIfNegative xs) && not (checkIfNegative ys) = auxMult (map sumMy (multiplyElements ys xs)) [0]
     | checkIfNegative xs && not (checkIfNegative ys) = changeSign (removeLeadingZeros (auxMult (map sumMy (multiplyElements ys (changeSign xs))) [0]))
     | otherwise = changeSign (removeLeadingZeros (auxMult (map sumMy (multiplyElements (changeSign ys) xs)) [0]))
 
 ```
+#### Exemplos de utilização:
+
+```
+*BigNumber> mulBN [-2] [1,0]
+mulBN [-2] [1,0]
+*BigNumber> mulBN [4,5,6] [9,2]
+[4,1,9,5,2]
+*BigNumber> mulBN [9,9,9,1,0] [5,6,9,8,7]
+[5,6,9,3,5,7,1,1,7,0]
+```
+
 
 ##### 2.7) A função divBN, para efetuar a divisão inteira de dois big-numbers. 
 
@@ -127,4 +156,40 @@ divBN bn1 bn2
 versão das três funções da alínea 1 que trabalhe com big-numbers.
 
 ```
+{-
+Alínea 3 Fibonacci Recursive BigNumber
+-}
+fibRecBN ::BigNumber -> BigNumber
+fibRecBN [0] = [0]
+fibRecBN [1] = [1]
+fibRecBN n = somaBN (fibRecBN (subBN n [2]))  (fibRecBN (subBN n [1]))
+
+{-
+Alínea 3 Fibonacci Programacao Dinamica
+-}
+fibListaBN :: BigNumber -> BigNumber
+fibListaBN [0] = [0]
+fibListaBN [1] = [1]
+fibListaBN n  = somaBN (indexer fibs (subBN n [1])) (indexer fibs (subBN n [2])) where
+  fibs = map fibListaBN listBN
+
+{-
+Alínea 3 Fibonacci Lista Infinita
+-}
+fibListaInfinitaBN :: BigNumber -> BigNumber
+fibListaInfinitaBN = indexer listaInfinita
+    where listaInfinita  = [0] : [1] : [somaBN a  b| (a,b)<- zip listaInfinita (tail listaInfinita)]
+
+
+--------------------- aux ------------------------
+
+fibBN :: [BigNumber]
+fibBN = [0] : [1] : zipWith somaBN fibBN (tail fibBN)
+
+listBN :: [BigNumber]
+listBN = iterate (\x -> somaBN x [1]) [0]
+
+indexer :: [BigNumber] -> BigNumber-> BigNumber
+indexer (x:xs) [0] = x
+indexer (x:xs) n = indexer  xs (subBN n [1])
 ```

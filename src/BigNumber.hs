@@ -29,8 +29,8 @@ subBN :: BigNumber -> BigNumber -> BigNumber
 subBN bn1 bn2 = somaBN bn1 (changeSign bn2)
 
 -- Multiplicaçao de dois BigNumber
-multBN :: BigNumber -> BigNumber -> BigNumber
-multBN xs ys
+mulBN :: BigNumber -> BigNumber -> BigNumber
+mulBN xs ys
     | checkIfNegative xs && checkIfNegative ys = auxMult (map sumMy (multiplyElements ys xs)) [0]
     | not (checkIfNegative xs) && not (checkIfNegative ys) = auxMult (map sumMy (multiplyElements ys xs)) [0]
     | checkIfNegative xs && not (checkIfNegative ys) = changeSign (removeLeadingZeros (auxMult (map sumMy (multiplyElements ys (changeSign xs))) [0]))
@@ -64,12 +64,6 @@ safeDivBN bn1 bn2
 
 
 ----------------------------- Aux functions -----------------------------------------
-
-auxSoma :: BigNumber -> BigNumber -> BigNumber
-auxSoma = zipWith (+)
-
-auxLenght :: BigNumber -> Int
-auxLenght = length
 
 
 removeLeadingZeros :: BigNumber -> BigNumber
