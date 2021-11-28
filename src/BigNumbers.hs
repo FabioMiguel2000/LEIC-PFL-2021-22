@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 type BigNumbers = [Int]
 
 -- data BigNumbers = BigNumbers [Int]
@@ -55,14 +54,6 @@ sumWithCarry (x1:xs1) (x2:xs2) carry res
     | (x1 + x2 + carry) < 0 = sumWithCarry xs1 xs2 ((x1 + x2 + carry) `quot` 10) (res ++ [ ((x1 + x2 + carry) `mod` (-10))])
     | otherwise = sumWithCarry xs1 xs2 ((x1 + x2 + carry) `quot` 10) (res ++ [(x1 + x2 + carry) `mod` 10])
 
-sumWithCarrySingleton :: BigNumbers -> Int -> BigNumbers  -> BigNumbers
-sumWithCarrySingleton [] carry res
-    | carry == 0 = res
-    | otherwise = res ++ [carry]
-sumWithCarrySingleton (x:xs) carry res
-    | (x + carry) < 0 = sumWithCarrySingleton xs ((x + carry) `quot` 10) (res ++ [(x + carry) `mod` (-10)])
-    | otherwise  =  sumWithCarrySingleton xs ((x + carry) `quot` 10) (res ++ [(x + carry) `mod` 10])
-
 subWithCarry [] [] carry res 
     | carry ==  0 = res
     | otherwise = res ++ [carry]
@@ -75,6 +66,15 @@ subWithCarry (x1:xs1) (x2:xs2) carry res
 -- 2: Once ths list of lists is represented in the right bigNumbers notation i'll sum each list with the other, could try to use a curry function somaBN'
 -- The result of this Sum would be the result of a multiplication between two bigNumbers ex [2,3] [4,5,6] *The minor value should come first
 
+
+sumWithCarrySingleton :: BigNumbers -> Int -> BigNumbers  -> BigNumbers
+sumWithCarrySingleton [] carry res
+    | carry == 0 = res
+    | otherwise = res ++ [carry]
+sumWithCarrySingleton (x:xs) carry res
+    | (x + carry) < 0 = sumWithCarrySingleton xs ((x + carry) `quot` 10) (res ++ [(x + carry) `mod` (-10)])
+    | otherwise  =  sumWithCarrySingleton xs ((x + carry) `quot` 10) (res ++ [(x + carry) `mod` 10])
+
 multiplyElements :: BigNumbers -> BigNumbers -> [BigNumbers]
 multiplyElements = flip (map . flip (map . (*)))
 
@@ -84,14 +84,7 @@ func f (x:xs) = f x : func f xs
 sumMy :: BigNumbers -> BigNumbers
 sumMy xs = reverse(sumWithCarrySingleton (reverse(xs)) 0 [])
 
-
-multBN xs ys= func sumMy (multiplyElements ys xs)
-
-
--- treatMultiply::[[BigNumbers]] -> [[BigNumbers]]
---treatMultiply [[]] = [[]]
--- treatMultiply :: [[BigNumbers]] -> [[BigNumbers]]
--- treatMultiply [(x:xs)]  = [res | res <- x]
+multBN xs ys= map sumMy (multiplyElements ys xs)
 
 -- If the diference between the lists to be summed is equal 1:
 -- (somaBN (reverse(drop 1 (reverse[1,3,6,8 ]))) (reverse [2,1,9]))++[(head(reverse [1,3,6,8]))]
@@ -104,3 +97,7 @@ multiSumTwo l1 l2
     | ((length (l1))-(length (l2)) > 0) = (somaBN (reverse(drop 1(reverse(l1)))) (l2)) ++ [head(reverse(l1))]
     | ((length (l1))-(length (l2)) < 0) = (somaBN (0:(0:(reverse(drop 1(reverse(l1)))))) (l2)) ++ [head(reverse(l1))]
     | otherwise = (somaBN (0:(reverse(drop 1(reverse(l1))))) (l2)) ++ [head(reverse(l1))]
+
+somaListaListasAux :: Int -> BigNumbers -> [BigNumbers] -> BigNumbers
+somaListaListasAux _ xs [] = xs
+somaListaListasAux n xs (y:ys) = somaListaListasAux (n+1) (somaLista xs (take n [0,0..] ++ y)) ys
