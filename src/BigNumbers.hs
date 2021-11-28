@@ -1,4 +1,3 @@
-type BigNumbers = [Int]
 
 -- data BigNumbers = BigNumbers [Int]
 
@@ -19,15 +18,7 @@ dec2int a = foldl(\x y -> 10 * x + y) 0 a
 output :: BigNumbers -> String
 output xs = show (dec2int xs)
 
-auxSoma :: BigNumbers -> BigNumbers -> BigNumbers
-auxSoma xs ys = zipWith (+) xs ys
-
-auxLenght :: BigNumbers -> Int
-auxLenght xs = length xs
-
--- somaBN :: BigNumbers -> BigNumbers -> BigNumbers
--- somaBN bn1 bn2 = revertMakeNeg (reverse (sumWithCarry (reverse (ifNegMakeNeg bn1)) (reverse (ifNegMakeNeg bn2)) 0 []))
-
+-- Soma de dois BigNumbers
 somaBN :: BigNumbers -> BigNumbers -> BigNumbers
 somaBN bn1 bn2
     | not (checkIfNegative bn1) && not (checkIfNegative bn2) = reverse (somaPosPos (reverse bn1) (reverse bn2) 0 [])  -- 2 positivos
@@ -37,22 +28,27 @@ somaBN bn1 bn2
     | absBiggerThan bn1 bn2 && checkIfNegative bn1 = changeSign ( removeLeadingZeros(reverse (subPosPos (reverse (changeSign bn1)) (reverse bn2) 0 []))) -- negativo + positivo, abs(negativo) > abs(positivo)
     | otherwise = removeLeadingZeros (reverse (subPosPos (reverse bn2) (reverse (changeSign bn1)) 0 [])) -- negativo + positivo, abs(negativo) < abs(positivo)
 
-
-
+-- Subtraçao entre dois BigNumbers
 subBN :: BigNumbers -> BigNumbers -> BigNumbers
 subBN bn1 bn2 = somaBN bn1 (changeSign bn2)
 
--- multBN :: BigNumbers -> BigNumbers -> BigNumbers
--- multBN bn1 bn2 = revertMakeNeg (reverse (multWithCarry (reverse (ifNegMakeNeg bn1)) (reverse (ifNegMakeNeg bn2)) 0 []))
+-- Multiplicaçao de dois BigNumbers
+multBN :: BigNumbers -> BigNumbers -> BigNumbers
+multBN xs ys
+    | checkIfNegative xs && checkIfNegative ys = auxMult (map sumMy (multiplyElements ys xs)) [0]
+    | not (checkIfNegative xs) && not (checkIfNegative ys) = auxMult (map sumMy (multiplyElements ys xs)) [0]
+    | checkIfNegative xs && not (checkIfNegative ys) = changeSign (removeLeadingZeros (auxMult (map sumMy (multiplyElements ys (changeSign xs))) [0]))
+    | otherwise = changeSign (removeLeadingZeros (auxMult (map sumMy (multiplyElements (changeSign ys) xs)) [0]))
 
+-- Divisao de dois BigNumbers
 divBN :: BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
 divBN bn1 [0] 
     = ([-1], [-1])      -- Divisor cannot be 0
 divBN bn1 bn2 
-    | not (checkIfNegative bn1) && not (checkIfNegative bn2) = divPosPos bn1 bn2 [0] [0]
-    | checkIfNegative bn1 && checkIfNegative bn2 = divNegNeg bn1 bn2 [0] [0]
-    | not (checkIfNegative bn1) && checkIfNegative bn2 = divPosNeg bn1 bn2 [0] [0]
-    | otherwise  = divNegPos bn1 bn2 [0] [0]
+    | not (checkIfNegative bn1) && not (checkIfNegative bn2) = divPosPos bn1 bn2 [0]
+    | checkIfNegative bn1 && checkIfNegative bn2 = divNegNeg bn1 bn2 [0]
+    | not (checkIfNegative bn1) && checkIfNegative bn2 = divPosNeg bn1 bn2 [0]
+    | otherwise  = divNegPos bn1 bn2 [0]
 
 
 --     where
@@ -63,32 +59,15 @@ divBN bn1 bn2
 -- bigNumbersToInt bn = foldl (\ x y -> x * 10 + y) 0 bn
 
 
+----------------------------- Aux functions -----------------------------------------
 
--- remainder = dividend - (divisor * quotient)
--- dividend = (divisor * quotient) + remainder
-divPosPos :: BigNumbers -> BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
-divPosPos bn1 bn2 quotient remainder          
-    | checkIfNegative (subBN bn1 bn2) = (quotient, bn1)
-    | otherwise = divPosPos (subBN bn1 bn2) bn2 (somaBN quotient [1]) remainder
+auxSoma :: BigNumbers -> BigNumbers -> BigNumbers
+auxSoma xs ys = zipWith (+) xs ys
 
-divNegNeg :: BigNumbers -> BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
-divNegNeg bn1 bn2 quotient remainder          
-    | not (checkIfNegative (subBN bn1 bn2)) = (quotient, bn1)
-    | otherwise = divNegNeg (subBN bn1 bn2) bn2 (somaBN quotient [1]) remainder
+auxLenght :: BigNumbers -> Int
+auxLenght xs = length xs
 
-divNegPos :: BigNumbers -> BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
-divNegPos bn1 bn2 quotient remainder          
-    | not (checkIfNegative (somaBN bn1 bn2)) = (quotient, bn1)
-    | otherwise = divNegPos (somaBN bn1 bn2) bn2 (somaBN quotient [-1]) remainder
 
-divPosNeg :: BigNumbers -> BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
-divPosNeg bn1 bn2 quotient remainder          
-    | checkIfNegative (somaBN bn1 bn2) = (quotient, bn1)
-    | otherwise = divPosNeg (somaBN bn1 bn2) bn2 (somaBN quotient [-1]) remainder
-
--- Aux functions
-
--- Soma de dois positivos
 removeLeadingZeros :: BigNumbers -> BigNumbers
 removeLeadingZeros [0]
     = [0]
@@ -120,6 +99,27 @@ subPosPos (x1:xs1) (x2:xs2) borrow res
     | (x1 - (borrow + x2)) < 0 = subPosPos xs1 xs2 1 (res ++ [ x1 + 10 - (borrow + x2)])
     | otherwise = subPosPos xs1 xs2 0 (res ++ [ x1 - (borrow + x2)])
 
+-- dividend = (divisor * quotient) + remainder
+divPosPos :: BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
+divPosPos bn1 bn2 quotient          
+    | checkIfNegative (subBN bn1 bn2) = (quotient, bn1)
+    | otherwise = divPosPos (subBN bn1 bn2) bn2 (somaBN quotient [1]) 
+
+divNegNeg :: BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
+divNegNeg bn1 bn2 quotient
+    | checkIfPositive (subBN bn1 bn2) = (quotient, bn1)
+    | otherwise = divNegNeg (subBN bn1 bn2) bn2 (somaBN quotient [1]) 
+
+divNegPos :: BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
+divNegPos bn1 bn2 quotient           
+    | checkIfPositive (somaBN bn1 bn2) = (quotient, bn1)
+    | otherwise = divNegPos (somaBN bn1 bn2) bn2 (somaBN quotient [-1]) 
+
+divPosNeg :: BigNumbers -> BigNumbers -> BigNumbers -> (BigNumbers, BigNumbers)
+divPosNeg bn1 bn2 quotient           
+    | checkIfNegative (somaBN bn1 bn2) = (quotient, bn1)
+    | otherwise = divPosNeg (somaBN bn1 bn2) bn2 (somaBN quotient [-1]) 
+
 absBiggerThan :: BigNumbers -> BigNumbers -> Bool
 absBiggerThan [] [] = False
 absBiggerThan (x1:xs1) (x2:xs2)
@@ -131,24 +131,12 @@ absBiggerThan (x1:xs1) (x2:xs2)
 checkIfNegative:: BigNumbers -> Bool
 checkIfNegative bn = head bn < 0
 
+checkIfPositive :: BigNumbers -> Bool
+checkIfPositive bn = head bn > 0
 
 changeSign :: BigNumbers -> BigNumbers
 changeSign [] = []
 changeSign (x:xs) = (x*(-1)) : xs
-
-
-makeNeg :: Num a => a -> a
-makeNeg n = -1*n
-
-ifNegMakeNeg :: BigNumbers -> BigNumbers
-ifNegMakeNeg (x:xs)
-    | x < 0 = x : map makeNeg xs
-    | otherwise = x:xs
-
-revertMakeNeg :: BigNumbers -> BigNumbers
-revertMakeNeg (x:xs)
-    | x < 0 = x : map abs xs
-    | otherwise = x:xs
 
 sumWithCarry :: BigNumbers -> BigNumbers -> Int -> BigNumbers  -> BigNumbers
 sumWithCarry [] (x:xs) carry res
@@ -184,12 +172,10 @@ multiplyElements = flip (map . flip (map . (*)))
 sumMy :: BigNumbers -> BigNumbers
 sumMy xs = reverse(sumWithCarrySingleton (reverse(xs)) 0 [])
 
-multBN xs ys
-    | checkIfNegative xs && checkIfNegative ys = auxMult (map sumMy (multiplyElements ys xs)) [0]
-    | not (checkIfNegative xs) && not (checkIfNegative ys) = auxMult (map sumMy (multiplyElements ys xs)) [0]
-    | checkIfNegative xs && not (checkIfNegative ys) = changeSign (removeLeadingZeros (auxMult (map sumMy (multiplyElements ys (changeSign xs))) [0]))
-    | otherwise = changeSign (removeLeadingZeros (auxMult (map sumMy (multiplyElements (changeSign ys) xs)) [0]))
 
+auxMult :: [BigNumbers] -> BigNumbers -> BigNumbers
+auxMult [] res = res
+auxMult (x:xs) res = auxMult xs (multiSumTwo x res)
 
 
 -- If the diference between the lists to be summed is equal 1:
@@ -204,6 +190,3 @@ multiSumTwo l1 l2
     | ((length (l1))-(length (l2)) < 0) = (somaBN (0:(0:(reverse(drop 1(reverse(l1)))))) (l2)) ++ [head(reverse(l1))]
     | otherwise = (somaBN (0:(reverse(drop 1(reverse(l1))))) (l2)) ++ [head(reverse(l1))]
 
-auxMult :: [BigNumbers] -> BigNumbers -> BigNumbers
-auxMult [] res = res
-auxMult (x:xs) res = auxMult xs (multiSumTwo x res)
