@@ -33,14 +33,16 @@ todos os números de Fibonacci e retornar o elemento de ordem n.
 ```
 fibListaInfinita :: Num a => Int -> a
 fibListaInfinita n = listaInfinita !! n
-    where listaInfinita  = 0 : 1 : [a + b| (a,b)<- zip listaInfinita (tail listaInfinita)] --lista infinita com todos os números de Fibonacci
+    where listaInfinita  = 0 : 1 : [a + b| (a,b)<- zip listaInfinita (tail listaInfinita)] 
+    --lista infinita com todos os números de Fibonacci
 ```
 
 ### Segunda Parte
 
 #### [BigNumber.hs](BigNumber.hs)
 
-Deveriamos implementar um módulo para aritmética para `BigNumber`, que posteriormente seria utilizado para implementar novas versões das funções da alínea 1.
+Deveriamos implementar um módulo para aritmética para `BigNumber`, 
+que posteriormente seria utilizado para implementar novas versões das funções da alínea 1.
 
 Um `BigNumber` é representado por uma lista dos seus dígitos, por isso decidimos implementar um `type BigNumber = [Int]`.
 
@@ -98,12 +100,22 @@ Exemplo:
 -- Soma de dois BigNumber
 somaBN :: BigNumber -> BigNumber -> BigNumber
 somaBN bn1 bn2
-    | not (checkIfNegative bn1) && not (checkIfNegative bn2) = reverse (somaPosPos (reverse bn1) (reverse bn2) 0 [])  -- 2 positivos
-    | checkIfNegative bn1 && checkIfNegative bn2 = changeSign (reverse (somaPosPos (reverse (changeSign bn1)) (reverse (changeSign bn2)) 0 []))  -- 2 negativos
-    | absBiggerThan bn1 bn2 && not (checkIfNegative bn1) = removeLeadingZeros (reverse (subPosPos (reverse bn1) (reverse (changeSign bn2)) 0 [])) -- positivo + negativo, abs(positivo) > abs(negativo)
-    | absBiggerThan bn2 bn1 && not (checkIfNegative bn1) = changeSign (removeLeadingZeros (reverse (subPosPos (reverse (changeSign bn2)) (reverse bn1) 0 []))) -- positivo + negativo, abs(positivo) < abs(negativo)
-    | absBiggerThan bn1 bn2 && checkIfNegative bn1 = changeSign ( removeLeadingZeros(reverse (subPosPos (reverse (changeSign bn1)) (reverse bn2) 0 []))) -- negativo + positivo, abs(negativo) > abs(positivo)
-    | otherwise = removeLeadingZeros (reverse (subPosPos (reverse bn2) (reverse (changeSign bn1)) 0 [])) -- negativo + positivo, abs(negativo) < abs(positivo)
+    | not (checkIfNegative bn1) && not (checkIfNegative bn2) 
+    = reverse (somaPosPos (reverse bn1) (reverse bn2) 0 [])  -- 2 positivos
+    | checkIfNegative bn1 && checkIfNegative bn2 
+    = changeSign (reverse (somaPosPos (reverse (changeSign bn1)) (reverse (changeSign bn2)) 0 []))  
+    -- 2 negativos
+    | absBiggerThan bn1 bn2 && not (checkIfNegative bn1) 
+    = removeLeadingZeros (reverse (subPosPos (reverse bn1) (reverse (changeSign bn2)) 0 [])) 
+    -- positivo + negativo, abs(positivo) > abs(negativo)
+    | absBiggerThan bn2 bn1 && not (checkIfNegative bn1) 
+    = changeSign (removeLeadingZeros (reverse (subPosPos (reverse (changeSign bn2)) (reverse bn1) 0 []))) 
+    -- positivo + negativo, abs(positivo) < abs(negativo)
+    | absBiggerThan bn1 bn2 && checkIfNegative bn1 
+    = changeSign ( removeLeadingZeros(reverse (subPosPos (reverse (changeSign bn1)) (reverse bn2) 0 []))) 
+    -- negativo + positivo, abs(negativo) > abs(positivo)
+    | otherwise = removeLeadingZeros (reverse (subPosPos (reverse bn2) (reverse (changeSign bn1)) 0 [])) 
+    -- negativo + positivo, abs(negativo) < abs(positivo)
 
 ```
 ##### 2.5) 
