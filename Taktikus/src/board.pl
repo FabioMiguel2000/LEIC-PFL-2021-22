@@ -1,5 +1,7 @@
 % This file contains all functions that manipulates the game board
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    Creates & Initializes a board   &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
 % creates and returns the initial gameboard with a given <Size>
 create_board(Size, Result):-
     EmptyRowsNum is Size -2,
@@ -41,3 +43,48 @@ aux_create_row(Size, Type, CurrentRow, Result):-
     append(CurrentRow, [Type], NewCurrentRow),
     NewSize is Size - 1,
     aux_create_row(NewSize, Type, NewCurrentRow, Result).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    Changes an element on the board   &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+
+% changes an element on the board given by the position <Row> and <Col>, and change it to the element <NewElement>
+change_board_element(GameBoard, Row, Col, NewElement, NewGameBoard):-
+    aux_change_board_element(GameBoard, 1, Row, Col, NewElement, [], NewGameBoard).
+
+% auxiliar function that changes an element on the board
+aux_change_board_element([], _, _, _, _, SavedBoard, NewGameBoard):-
+    NewGameBoard = SavedBoard.
+
+aux_change_board_element([Row|Rest], CurrentRowNum, RowNum, ColNum, NewElement, SavedBoard, NewGameBoard):-
+    \+ CurrentRowNum = RowNum,
+    NewRowNum is CurrentRowNum + 1,
+    append(SavedBoard, [Row], NewSavedBoard),
+    aux_change_board_element(Rest, NewRowNum, RowNum, ColNum, NewElement, NewSavedBoard, NewGameBoard).
+
+aux_change_board_element([Row|Rest], CurrentRowNum, RowNum, ColNum, NewElement, SavedBoard, NewGameBoard):-
+    CurrentRowNum = RowNum,
+    NewRowNum is CurrentRowNum + 1,
+    change_row_element(Row, ColNum, NewElement, NewRow),
+    append(SavedBoard, [NewRow], NewSavedBoard),
+    aux_change_board_element(Rest, NewRowNum, RowNum, ColNum, NewElement, NewSavedBoard, NewGameBoard).
+
+% changes an element on the row given by the position <ColumnNum>, and change it to the element <NewElement>
+change_row_element(Row, ColumnNum, NewElement, NewRow):-
+    aux_change_row_element(Row, 1, ColumnNum, NewElement, [], NewRow).
+
+% auxiar function that changes an element on the row
+aux_change_row_element([], _, _, _, SavedRow, NewRow):-
+    NewRow = SavedRow.
+
+aux_change_row_element([Cell|Rest], CurrentCol, ColNum, NewElement, SavedRow, NewRow):-
+    \+ CurrentCol = ColNum,
+    NewColNum is CurrentCol + 1,
+    append(SavedRow, [Cell], NewSavedRow),
+    aux_change_row_element(Rest, NewColNum, ColNum, NewElement, NewSavedRow, NewRow).
+
+aux_change_row_element([_|Rest], CurrentCol, ColNum, NewElement, SavedRow, NewRow):-
+    CurrentCol = ColNum,
+    NewColNum is CurrentCol + 1,
+    append(SavedRow, [NewElement], NewSavedRow),
+    aux_change_row_element(Rest, NewColNum, ColNum, NewElement, NewSavedRow, NewRow).

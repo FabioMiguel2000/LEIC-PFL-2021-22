@@ -1,4 +1,3 @@
-
 letterNumber(1, 'A').
 letterNumber(1, 'a').
 letterNumber(1, '1').

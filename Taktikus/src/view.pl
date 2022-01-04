@@ -1,6 +1,6 @@
-% This file contains all visual effects of the game
-:- include('variables').
-
+ui(black, 9823).
+ui(white, 9817).
+ui(empty, 9634).
 
 % Displays the gameBoard given by <GameState>
 % display_game(+GameState)
