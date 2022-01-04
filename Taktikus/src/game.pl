@@ -1,11 +1,25 @@
 
 :- include('view.pl').
+:- include('board.pl').
+:- include('utils.pl').
+
+:- dynamic(game_over/1).
+
+game_over(false).
 
 % main function that begins the game
 play:-
     game_board_size(Size),
     initial_state(Size, GameState),
-    display_game(GameState).
+    game_loop(GameState).
+
+game_loop(GameState):-
+    game_over(Flag),
+    Flag = false,
+    display_game(GameState),
+    read_user_input(Move),
+    move(GameState, Move, NewGameState),
+    game_loop(NewGameState).
 
 % initializes the game state where,
 % GameState = [Board, PlayerTurn]
@@ -21,47 +35,79 @@ initial_state(Size, [GameBoard|PlayerTurn]):-
     Size > 2,
     create_board(Size, GameBoard),
     PlayerTurn = white.
+
+% [[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]]
+
+change_board_element(GameBoard, Row, Col, NewElement, NewGameBoard):-
+    aux_change_board_element(GameBoard, 1, Row, Col, NewElement, [], NewGameBoard).
+
+aux_change_board_element([], _, _, _, _, SavedBoard, NewGameBoard):-
+    NewGameBoard = SavedBoard.
+
+% SavedGame starts with []
+aux_change_board_element([Row|Rest], CurrentRowNum, RowNum, ColNum, NewElement, SavedBoard, NewGameBoard):-
+    \+ CurrentRowNum = RowNum,
+    NewRowNum is CurrentRowNum + 1,
+    append(SavedBoard, [Row], NewSavedBoard),
+    aux_change_board_element(Rest, NewRowNum, RowNum, ColNum, NewElement, NewSavedBoard, NewGameBoard).
+
+aux_change_board_element([Row|Rest], CurrentRowNum, RowNum, ColNum, NewElement, SavedBoard, NewGameBoard):-
+    CurrentRowNum = RowNum,
+    NewRowNum is CurrentRowNum + 1,
+    change_row_element(Row, ColNum, NewElement, NewRow),
+    append(SavedBoard, [NewRow], NewSavedBoard),
+    aux_change_board_element(Rest, NewRowNum, RowNum, ColNum, NewElement, NewSavedBoard, NewGameBoard).
+
+
+change_row_element(Row, ColumnNum, NewElement, NewRow):-
+    aux_change_row_element(Row, 1, ColumnNum, NewElement, [], NewRow).
+
+aux_change_row_element([], _, _, _, SavedRow, NewRow):-
+    NewRow = SavedRow.
+
+aux_change_row_element([Cell|Rest], CurrentCol, ColNum, NewElement, SavedRow, NewRow):-
+    \+ CurrentCol = ColNum,
+    NewColNum is CurrentCol + 1,
+    append(SavedRow, [Cell], NewSavedRow),
+    aux_change_row_element(Rest, NewColNum, ColNum, NewElement, NewSavedRow, NewRow).
+
+aux_change_row_element([_|Rest], CurrentCol, ColNum, NewElement, SavedRow, NewRow):-
+    CurrentCol = ColNum,
+    NewColNum is CurrentCol + 1,
+    append(SavedRow, [NewElement], NewSavedRow),
+    aux_change_row_element(Rest, NewColNum, ColNum, NewElement, NewSavedRow, NewRow).
+
+% change_player_turn(+PlayerTurn, -NewPlayerTurn)
+change_player_turn(black, white).
+change_player_turn(white, black).
+
+
+
+read_user_input(Move):-
+    read(Input),    %expecting something like d4d5.
+    atom_chars(Input, InputList),
+    parse_input(InputList, Move).
+
+parse_input([Col|[Row|[NewCol|[NewRow]]]], Move):-
+    letterNumber(ColNum, Col),
+    letterNumber(NewColNum, NewCol),
+    letterNumber(RowNum, Row),
+    letterNumber(NewRowNum, NewRow),
+    Move = [[RowNum,ColNum],[NewRowNum,NewColNum]].
+
+
+% move(+GameState, +Move, -NewGameState)
+%       -   Move = composed of old postion and new postion
+%               - Move = [OldPosition|NewPostion]
+%               - Position = [RowNum|ColNum], (e.g. [1,5])
+move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
+    change_board_element(GameBoard, Row, Column, empty, NewGameBoardTemp),
+    change_board_element(NewGameBoardTemp, NewRow, NewColumn, PlayerTurn, NewGameBoard),
+    change_player_turn(PlayerTurn, NewPlayerTurn),
+    NewGameState = [NewGameBoard|NewPlayerTurn].
+
+
+
     
-% creates and returns the initial gameboard with a given <Size>
-create_board(Size, Result):-
-    EmptyRowsNum is Size -2,
-    create_empty_board(EmptyRowsNum, Size, EmptyRows),
-    create_row(Size, white, WhiteRow),
-    create_row(Size, black, BlackRow),
-    append([WhiteRow], EmptyRows, BoardWithWhitePieces),
-    append(BoardWithWhitePieces, [BlackRow], Result).
 
-% creates and returns the empty side of the board
-create_empty_board(Rows, Columns, Result):-
-    create_row(Columns, empty, EmptyRow),
-    aux_create_empty_board(Rows, EmptyRow, [], Result).
-
-% auxiliar function that creates and returns the empty side of the board
-aux_create_empty_board(Size, EmptyRow, CurrentBoard, Result):-
-    Size =:= 1,
-    append(CurrentBoard, [EmptyRow], Result).
-
-aux_create_empty_board(Size, EmptyRow, CurrentBoard, Result):-
-    Size > 1,
-    append(CurrentBoard, [EmptyRow], NewBoard),
-    NewSize is Size - 1,
-    aux_create_empty_board(NewSize, EmptyRow, NewBoard, Result).
-
-% creates and returns a row with <Size> elements of a fiven <Type>
-create_row(Size, Type, Result):-
-    aux_create_row(Size, Type, [], Result).
-
-% auxiliar function that creates and returns a row with <Size> elements of a fiven <Type>
-aux_create_row(0, _, _, []).
-
-aux_create_row(Size, Type, CurrentRow, Result):-
-    Size =:= 1,
-    append(CurrentRow, [Type], Result).
-
-aux_create_row(Size, Type, CurrentRow, Result):-
-    Size > 1,
-    append(CurrentRow, [Type], NewCurrentRow),
-    NewSize is Size - 1,
-    aux_create_row(NewSize, Type, NewCurrentRow, Result).
-
-
+% change_board_element([[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).

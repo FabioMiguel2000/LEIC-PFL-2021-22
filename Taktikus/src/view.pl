@@ -23,23 +23,23 @@ display_player_turn(PlayerTurn):-
 display_board(GameBoard):-
     aux_display_board(GameBoard, 1).
 
-% outputs the row numbers (A, B, C, D, E ...)
-display_row_description(CurrentRowNumber, RowNumber):-
+% outputs the column letters (A, B, C, D, E ...)
+display_column_letters(CurrentRowNumber, RowNumber):-
     CurrentRowNumber = RowNumber,
     write('\n').
 
-display_row_description(CurrentRowNumber, RowNumber):-
+display_column_letters(CurrentRowNumber, RowNumber):-
     \+ CurrentRowNumber > RowNumber,
     CodeNum is CurrentRowNumber + 64,
     NewCurrentRowNumber is CurrentRowNumber + 1,
     put_code(CodeNum),
     write(' '),
-    display_row_description(NewCurrentRowNumber, RowNumber).
+    display_column_letters(NewCurrentRowNumber, RowNumber).
 
 % auxiliar function that helps visually outputs on the CLI a the gameboard
 aux_display_board([], RowNumber):-
     write('    '),
-    display_row_description(1, RowNumber).
+    display_column_letters(1, RowNumber).
 
 aux_display_board([Row|Rest], RowNumber):-
     write('  '),
