@@ -1,38 +1,38 @@
-letterNumber(1, 'A').
-letterNumber(1, 'a').
-letterNumber(1, '1').
+numberLetter(1, 'A').
+numberLetter(1, 'a').
+numberLetter(1, '1').
 
-letterNumber(2, 'B').
-letterNumber(2, 'b').
-letterNumber(2, '2').
+numberLetter(2, 'B').
+numberLetter(2, 'b').
+numberLetter(2, '2').
 
-letterNumber(3, 'C').
-letterNumber(3, 'c').
-letterNumber(3, '3').
+numberLetter(3, 'C').
+numberLetter(3, 'c').
+numberLetter(3, '3').
 
-letterNumber(4, 'D').
-letterNumber(4, 'd').
-letterNumber(4, '4').
-
-
-letterNumber(5, 'E').
-letterNumber(5, 'e').
-letterNumber(5, '5').
-
-letterNumber(6, 'F').
-letterNumber(6, 'f').
-letterNumber(6, '6').
+numberLetter(4, 'D').
+numberLetter(4, 'd').
+numberLetter(4, '4').
 
 
-letterNumber(7, 'G').
-letterNumber(7, 'g').
-letterNumber(7, '7').
+numberLetter(5, 'E').
+numberLetter(5, 'e').
+numberLetter(5, '5').
 
-letterNumber(8, 'H').
-letterNumber(8, 'h').
-letterNumber(8, '8').
+numberLetter(6, 'F').
+numberLetter(6, 'f').
+numberLetter(6, '6').
 
-letterNumber(9, 'I').
-letterNumber(9, 'i').
-letterNumber(9, '9').
+
+numberLetter(7, 'G').
+numberLetter(7, 'g').
+numberLetter(7, '7').
+
+numberLetter(8, 'H').
+numberLetter(8, 'h').
+numberLetter(8, '8').
+
+numberLetter(9, 'I').
+numberLetter(9, 'i').
+numberLetter(9, '9').
 
