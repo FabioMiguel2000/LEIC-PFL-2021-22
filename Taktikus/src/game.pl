@@ -113,10 +113,18 @@ move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
     change_board_element(NewGameBoardTemp, NewRow, NewColumn, PlayerTurn, NewGameBoard),
     %   MISSING FUNCTION HERE! Check if there is a capture
     change_player_turn(PlayerTurn, NewPlayerTurn),
+    game_over(NewGameBoard, NewPlayerTurn),
+
     NewGameState = [NewGameBoard|NewPlayerTurn].
 
-
-
-    
-
 % change_board_element([[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).
+
+% check_capture(GameBoard, PlayerTurn)
+
+% player_pawn([])
+
+game_over(GameBoard, OtherPlayer):-
+    count_list(OtherPlayer, GameBoard, Pawns),
+    Pawns < 2,
+    write('You win !').
+

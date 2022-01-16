@@ -1,6 +1,6 @@
-ui(black, 9823).
-ui(white, 9817).
-ui(empty, 9634).
+ui(black, 66).
+ui(white, 65).
+ui(empty, 43).
 
 % Displays the gameBoard given by <GameState>
 % display_game(+GameState)
