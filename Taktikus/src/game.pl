@@ -4,6 +4,7 @@
 :- include('utils.pl').
 
 :- use_module(library(between)).
+:- use_module(library(lists)).
 
 :- dynamic(game_over/1).
 
@@ -79,13 +80,6 @@ different_pos(Col, Row, Col, Row):-
 
 different_pos(_,_,_,_).
 
-% % valid_moves(+GameState, -ListOfMoves)
-% valid_moves([GameBoard|PlayerTurn], ListOfMoves).
-
-% % all valid moves of a given piece
-% valid_moves_of_piece.
-
-% valid_moves_of_
 
 % parses and validates the input from user, and convert it to [[Row, Col], [NewRow, NewCol]]
 parse_input([Col|[Row|[NewCol|[NewRow]]]], Move):-
@@ -116,7 +110,85 @@ move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
     NewGameState = [NewGameBoard|NewPlayerTurn].
 
 
+% valid_moves(+GameState, -ListOfMoves)
+% valid_moves([GameBoard|PlayerTurn], ListOfMoves).
 
-    
+% % all valid moves of a given piece
+% valid_moves_of_piece.
 
-% change_board_element([[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).
+% valid_row_moves_of_piece.
+
+% valid_horizontal_moves_of_piece(PiecePosition, GameBoard, ListOfMoves):-
+
+
+valid_vertical_moves_of_piece(PiecePosition, GameBoard, ListOfMoves):-
+    valid_vertical_moves(top,PiecePosition, GameBoard, TopMovesByPiece),
+    valid_vertical_moves(bottom,PiecePosition, GameBoard, BotMovesByPiece),
+    append(TopMovesByPiece, BotMovesByPiece, ListOfMoves).
+
+
+valid_vertical_moves(DirectionType,[Row,Col], GameBoard, ListOfMoves):-
+    valid_vertical_moves(DirectionType,[Row,Col], Row, GameBoard, [], ListOfMoves).
+
+valid_vertical_moves(_,_,0,_,AccumulatorList, AccumulatorList):-
+    !.
+
+valid_vertical_moves(DirectionType,[CurrentRow,Col],CurrentRow,GameBoard, AccumulatorList, ListOfMoves):-
+    !,
+    get_next_index(DirectionType, CurrentRow, NextRow),
+    valid_vertical_moves(DirectionType,[CurrentRow,Col],NextRow,GameBoard, AccumulatorList, ListOfMoves).
+
+
+valid_vertical_moves(DirectionType,[Row,Col],CurrentRow,GameBoard, AccumulatorList, ListOfMoves):-
+    nth1(CurrentRow, GameBoard, BoardRow),
+    nth1(Col, BoardRow, Elem),
+    Elem = e,
+    append(AccumulatorList, [[[Row,Col], [CurrentRow, Col]]], AccumulatorList2),
+    get_next_index(DirectionType, CurrentRow, NextRow),
+    valid_vertical_moves(DirectionType,[Row,Col],NextRow,GameBoard,AccumulatorList2, ListOfMoves).
+
+valid_vertical_moves(_,_,_,_, AccumulatorList, AccumulatorList).
+
+
+valid_horizontal_moves_of_piece(PiecePosition, GameBoard, ListOfMoves):-
+    valid_horizontal_moves(left,PiecePosition, GameBoard, LeftMovesByPiece),
+    valid_horizontal_moves(right,PiecePosition, GameBoard, RightMovesByPiece),
+    append(LeftMovesByPiece, RightMovesByPiece, ListOfMoves).
+
+valid_horizontal_moves(DirectionType,[Row,Col], GameBoard, ListOfMoves):-
+    valid_horizontal_moves(DirectionType,[Row,Col], Col, GameBoard, [], ListOfMoves).
+
+valid_horizontal_moves(_,_,0,_,AccumulatorList, AccumulatorList):-
+    !.
+
+valid_horizontal_moves(DirectionType,[Row,CurrentCol],CurrentCol,GameBoard, AccumulatorList, ListOfMoves):-
+    !,
+    get_next_index(DirectionType, CurrentCol, NextCol),
+    valid_horizontal_moves(DirectionType,[Row,CurrentCol],NextCol,GameBoard, AccumulatorList, ListOfMoves).
+
+
+valid_horizontal_moves(DirectionType,[Row,Col],CurrentCol,GameBoard, AccumulatorList, ListOfMoves):-
+    nth1(Row, GameBoard, BoardRow),
+    nth1(CurrentCol, BoardRow, Elem),
+    Elem = e,
+    append(AccumulatorList, [[[Row,Col], [Row, CurrentCol]]], AccumulatorList2),
+    get_next_index(DirectionType, CurrentCol, NextCol),
+    valid_horizontal_moves(DirectionType,[Row,Col],NextCol,GameBoard,AccumulatorList2, ListOfMoves).
+
+valid_horizontal_moves(_,_,_,_, AccumulatorList, AccumulatorList).
+
+
+get_next_index(top, CurrentRow, NextRow):-
+    !,NextRow is CurrentRow - 1.
+
+get_next_index(bottom, CurrentRow, NextRow):-
+    !,NextRow is CurrentRow + 1.
+
+get_next_index(right, CurrentCol, NextCol):-
+    !,NextCol is CurrentCol + 1.
+
+get_next_index(left, CurrentCol, NextCol):-
+    !,NextCol is CurrentCol - 1.
+
+% change_board_element([[e,w,w,w,w],[e,e,e,e,e],[w,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).
+% valid_horizontal_moves_of_piece([2,2], [[e,w,w,w,w],[w,w,w,e,w],[e,e,e,e,e],[w,e,e,e,e],[e,b,b,b,b]],L).
