@@ -111,64 +111,99 @@ move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
 
 
 % valid_moves(+GameState, -ListOfMoves)
-% valid_moves([GameBoard|PlayerTurn], ListOfMoves).
+% Returns all valid moves with the game state given (game board and player turn).
+valid_moves([GameBoard|[PlayerTurn]], ListOfMoves):-
+    game_board_size(BoardSize),
+    element_on_board_moves(GameBoard, BoardSize, PlayerTurn, 1, 1, [], ListOfMoves).
 
-% % all valid moves of a given piece
-% valid_moves_of_piece.
-
-% valid_row_moves_of_piece.
-
-% valid_horizontal_moves_of_piece(PiecePosition, GameBoard, ListOfMoves):-
-
-
-valid_vertical_moves_of_piece(PiecePosition, GameBoard, ListOfMoves):-
-    valid_moves_by_piece(top,PiecePosition, GameBoard, TopMovesByPiece),
-    valid_moves_by_piece(bottom,PiecePosition, GameBoard, BotMovesByPiece),
-    append(TopMovesByPiece, BotMovesByPiece, ListOfMoves).
-
-valid_horizontal_moves_of_piece(PiecePosition, GameBoard, ListOfMoves):-
-    valid_moves_by_piece(left,PiecePosition, GameBoard, LeftMovesByPiece),
-    valid_moves_by_piece(right,PiecePosition, GameBoard, RightMovesByPiece),
-    append(LeftMovesByPiece, RightMovesByPiece, ListOfMoves).
-
-valid_moves_by_piece(DirectionType,[Row,Col], GameBoard, ListOfMoves):-
-    valid_moves_by_piece(DirectionType,[Row,Col], Row, Col, GameBoard, [], ListOfMoves).
-
-valid_moves_by_piece(_,_,0,_,_, AccumulatorList, AccumulatorList):-
+% index_increment(+BoardSize, +RowIndex, +ColIndex, -RowIndex2, -ColIndex2)
+% Updates the index to loop through the gameboard, on finish <RowIndex2> and <ColIndex2> are set to 0.
+index_increment(BoardSize, BoardSize, BoardSize, 0, 0):- % Ends
     !.
-
-valid_moves_by_piece(_,_,_,0,_, AccumulatorList, AccumulatorList):-
-    !.
-
-valid_moves_by_piece(DirectionType,[RowIndex,ColIndex],RowIndex, ColIndex,GameBoard, AccumulatorList, ListOfMoves):-
+index_increment(BoardSize, RowIndex, BoardSize, RowIndex2, 1):-
     !,
-    get_next_index(DirectionType, RowIndex, ColIndex, RowIndex2, ColIndex2),
-    valid_moves_by_piece(DirectionType,[RowIndex,ColIndex],RowIndex2, ColIndex2,GameBoard,AccumulatorList, ListOfMoves).
+    RowIndex2 is RowIndex + 1.
 
-valid_moves_by_piece(DirectionType,[Row,Col],RowIndex, ColIndex,GameBoard, AccumulatorList, ListOfMoves):-
+index_increment(BoardSize, RowIndex, ColIndex, RowIndex2, ColIndex2):-
+    ColIndex < BoardSize,
+    ColIndex2 is ColIndex + 1,
+    RowIndex2 = RowIndex.
+
+% element_on_board_moves(+GameBoard, +BoardSize, +PlayerTurn, +RowIndex, +ColIndex, +AccList, -ListOfMoves)
+% Loops each piece on the board, and finds out all the possible moves by the pieces of the current player.
+element_on_board_moves(_, _, _, 0, 0, AccList, AccList):-
+    !.
+
+element_on_board_moves(GameBoard, BoardSize, PlayerTurn, RowIndex, ColIndex, AccList, ListOfMoves):-
     nth1(RowIndex, GameBoard, BoardRow),
     nth1(ColIndex, BoardRow, Elem),
-    Elem = e,
+    Elem = PlayerTurn,
+    !,
+    valid_moves_by_piece([RowIndex, ColIndex], GameBoard, MovesByPiece),
+    append(AccList, MovesByPiece, AccList2),
+    index_increment(BoardSize, RowIndex, ColIndex, RowIndex2, ColIndex2),
+    element_on_board_moves(GameBoard, BoardSize, PlayerTurn, RowIndex2, ColIndex2, AccList2,ListOfMoves).
+
+element_on_board_moves(GameBoard, BoardSize, PlayerTurn, RowIndex, ColIndex, AccList, ListOfMoves):-
+    index_increment(BoardSize, RowIndex, ColIndex, RowIndex2, ColIndex2),
+    element_on_board_moves(GameBoard, BoardSize, PlayerTurn, RowIndex2, ColIndex2, AccList,ListOfMoves).
+
+% valid_moves_by_piece(+PiecePosition, +GameBoard, -ListOfMoves)
+% For a given piece on the board, finds all the possible moves that it can take
+valid_moves_by_piece(PiecePosition, GameBoard, ListOfMoves):-
+    aux_valid_moves_by_piece(top,PiecePosition, GameBoard, TopMovesByPiece),            % Finds all moves available to the top
+    aux_valid_moves_by_piece(bottom,PiecePosition, GameBoard, BotMovesByPiece),         % Finds all moves available to the bottom
+    append(TopMovesByPiece, BotMovesByPiece, VerticalMovesByPiece),     
+
+    aux_valid_moves_by_piece(left,PiecePosition, GameBoard, LeftMovesByPiece),          % Finds all moves available to the left
+    aux_valid_moves_by_piece(right,PiecePosition, GameBoard, RightMovesByPiece),        % Finds all moves available to the right
+    append(LeftMovesByPiece, RightMovesByPiece, HorizontalMovesByPiece),
+
+    append(HorizontalMovesByPiece, VerticalMovesByPiece, ListOfMoves).
+
+% aux_valid_moves_by_piece(+DirectionType, +PiecePosition, +GameBoard, -ListOfMoves)
+% For a given piece on the board, finds all the possible moves for a particular direction (top, bottom, right or left).
+aux_valid_moves_by_piece(DirectionType,[Row,Col], GameBoard, ListOfMoves):-
+    aux_valid_moves_by_piece(DirectionType,[Row,Col], Row, Col, GameBoard, [], ListOfMoves).
+
+aux_valid_moves_by_piece(_,_,0,_,_, AccumulatorList, AccumulatorList):-
+    !.
+
+aux_valid_moves_by_piece(_,_,_,0,_, AccumulatorList, AccumulatorList):-
+    !.
+
+aux_valid_moves_by_piece(DirectionType,[RowIndex,ColIndex],RowIndex, ColIndex,GameBoard, AccumulatorList, ListOfMoves):-
+    !,
+    index_increment_by_direction(DirectionType, RowIndex, ColIndex, RowIndex2, ColIndex2),
+    aux_valid_moves_by_piece(DirectionType,[RowIndex,ColIndex],RowIndex2, ColIndex2,GameBoard,AccumulatorList, ListOfMoves).
+
+aux_valid_moves_by_piece(DirectionType,[Row,Col],RowIndex, ColIndex,GameBoard, AccumulatorList, ListOfMoves):-
+    nth1(RowIndex, GameBoard, BoardRow),
+    nth1(ColIndex, BoardRow, Elem),
+    Elem = empty,
     append(AccumulatorList, [[[Row,Col], [RowIndex, ColIndex]]], AccumulatorList2),
-    get_next_index(DirectionType, RowIndex, ColIndex, RowIndex2, ColIndex2),
-    valid_moves_by_piece(DirectionType,[Row,Col],RowIndex2, ColIndex2,GameBoard,AccumulatorList2, ListOfMoves).
+    index_increment_by_direction(DirectionType, RowIndex, ColIndex, RowIndex2, ColIndex2),
+    aux_valid_moves_by_piece(DirectionType,[Row,Col],RowIndex2, ColIndex2,GameBoard,AccumulatorList2, ListOfMoves).
 
-valid_moves_by_piece(_,_,_,_,_, AccumulatorList, AccumulatorList).
+aux_valid_moves_by_piece(_,_,_,_,_, AccumulatorList, AccumulatorList).
 
-
-get_next_index(top, RowIndex, ColIndex, RowIndex2, ColIndex):-
+% index_increment_by_direction(+DirectionType, +RowIndex, +ColIndex, -RowIndex2, ColIndex2)
+% Depending on the type of direction, increments the index to loop through the board.
+index_increment_by_direction(top, RowIndex, ColIndex, RowIndex2, ColIndex):-
     !,RowIndex2 is RowIndex - 1.
 
-get_next_index(bottom, RowIndex, ColIndex, RowIndex2, ColIndex):-
+index_increment_by_direction(bottom, RowIndex, ColIndex, RowIndex2, ColIndex):-
     !,RowIndex2 is RowIndex + 1.
 
-get_next_index(right, RowIndex, ColIndex, RowIndex, ColIndex2):-
+index_increment_by_direction(right, RowIndex, ColIndex, RowIndex, ColIndex2):-
     !,ColIndex2 is ColIndex + 1.
 
-get_next_index(left, RowIndex, ColIndex, RowIndex, ColIndex2):-
+index_increment_by_direction(left, RowIndex, ColIndex, RowIndex, ColIndex2):-
     !,ColIndex2 is ColIndex - 1.
 
 % change_board_element([[e,w,w,w,w],[e,e,e,e,e],[w,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).
 % valid_horizontal_moves_of_piece([2,2], [[e,w,w,w,w],[w,w,w,e,w],[e,e,e,e,e],[w,e,e,e,e],[e,b,b,b,b]],L).
 
-% valid_vertical_moves_of_piece([2,3], [[e,w,w,w,w],[w,w,w,e,w],[e,e,e,e,e],[w,e,e,e,e],[e,b,b,b,b]],L).
+% valid_vertical_moves_of_piece([5,1], [[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]],L).
+
+% valid_moves([[[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[b,e,e,e,e],[e,b,b,b,b]], b], L).
