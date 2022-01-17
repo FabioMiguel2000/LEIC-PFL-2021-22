@@ -1,7 +1,7 @@
-test:-
-    get_char(X),
-    get_char(Y),
-    get_char(Z).
+test(X):-
+    repeat,
+    read(X),
+    X = 0.
 
 
 get_input:-
@@ -10,3 +10,5 @@ get_input:-
     write(X),nl,
     write(Length).
     
+
+
