@@ -114,8 +114,13 @@ move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
     log_movement_msg(PlayerTurn, Row,Column,NewRow,NewColumn),
     %   MISSING FUNCTION HERE! Check if there is a capture
     change_player_turn(PlayerTurn, NewPlayerTurn),
+    game_over(NewGameBoard, NewPlayerTurn),
+
     NewGameState = [NewGameBoard|NewPlayerTurn].
 
+% change_board_element([[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).
+
+% check_capture(GameBoard, PlayerTurn)
 
 % valid_moves(+GameState, -ListOfMoves)
 % Returns all valid moves with the game state given (game board and player turn).
@@ -130,3 +135,9 @@ valid_moves([GameBoard|PlayerTurn], ListOfMoves):-
 % valid_vertical_moves_of_piece([5,1], [[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]],L).
 
 % valid_moves([[[white,white,white,white,white,w,w,w],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[b,b,b,b,b,b,b,b]]| b], L).
+
+game_over(GameBoard, OtherPlayer):-
+    count_list(OtherPlayer, GameBoard, Pawns),
+    Pawns < 2,
+    write('You win !').
+

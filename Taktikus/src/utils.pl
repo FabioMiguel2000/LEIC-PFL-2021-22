@@ -36,3 +36,14 @@ numberLetter(9, 'I').
 numberLetter(9, 'i').
 numberLetter(9, '9').
 
+count(_, [], 0).
+count(E, [E | T], N) :- count(E, T, NT),
+                        N is NT + 1.
+count(E, [H | T], N) :- H \= E,
+                        count(E, T, N).
+
+count_list(_, [], 0).
+count_list(E, [H|T], N) :-
+    count(E, H, HN),
+    count_list(E, T, TN),
+    N is HN + TN.
