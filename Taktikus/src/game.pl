@@ -15,7 +15,7 @@ game_over(false).       % game over flag, change to true when a game over condit
 
 % main function that begins the game
 play:-
-    logo,
+    menu,
     game_board_size(Size),
     initial_state(Size, GameState),
     game_loop(GameState).
