@@ -12,6 +12,8 @@ game_board_size(8).     % game_board_size(-N), size of the game board, given by 
 
 game_over(false).       % game over flag, change to true when a game over condition is triggered
 
+
+
 % main function that begins the game
 /*play:-
     game_board_size(Size),
@@ -26,7 +28,7 @@ game_loop(GameState):-
     display_game(GameState),
     valid_moves(GameState, ListOfMoves),
     read_user_input(Move, ListOfMoves),
-    move(GameState, Move, NewGameState),
+    move(GameState, Move, NewGameState),   
     game_loop(NewGameState).
 
 game_loop(_):-
@@ -115,7 +117,6 @@ move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
     %   MISSING FUNCTION HERE! Check if there is a capture
     change_player_turn(PlayerTurn, NewPlayerTurn),
     game_over(NewGameBoard, NewPlayerTurn),
-
     NewGameState = [NewGameBoard|NewPlayerTurn].
 
 % change_board_element([[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).
@@ -136,8 +137,13 @@ valid_moves([GameBoard|PlayerTurn], ListOfMoves):-
 
 % valid_moves([[[white,white,white,white,white,w,w,w],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[b,b,b,b,b,b,b,b]]| b], L).
 
-game_over(GameBoard, OtherPlayer):-
-    count_list(OtherPlayer, GameBoard, Pawns),
-    Pawns < 2,
+
+
+game_over(GameBoard, OtherPlayer):- 
+    count_list(OtherPlayer, GameBoard, Pawns),      % Checks if game over condition is met
+    Pawns < 2,      % If game over condition is achieved
+    !,
     write('You win !').
+
+game_over(_,_). %If not game over
 
