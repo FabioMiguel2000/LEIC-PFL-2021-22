@@ -3,7 +3,6 @@
 :- include('board.pl').
 :- include('utils.pl').
 :- include('moves.pl').
-:- include('menu.pl').
 
 :- use_module(library(between)).
 
@@ -14,12 +13,11 @@ game_board_size(8).     % game_board_size(-N), size of the game board, given by 
 game_over(false).       % game over flag, change to true when a game over condition is triggered
 
 % main function that begins the game
-play:-
-    menu,
+/*play:-
     game_board_size(Size),
     initial_state(Size, GameState),
     game_loop(GameState).
-
+*/
 % gameloop, ends when game over flag is achieved
 game_loop(GameState):-
     game_over(Flag),
