@@ -1,11 +1,10 @@
 
-:- include('view.pl').
+/*:- include('view.pl').
 :- include('board.pl').
 :- include('utils.pl').
 :- include('moves.pl').
-:- include('menu.pl').
 
-:- use_module(library(between)).
+:- use_module(library(between)).*/
 
 :- dynamic(game_over/1).
 
@@ -16,12 +15,11 @@ game_over(false).       % game over flag, change to true when a game over condit
 
 
 % main function that begins the game
-play:-
-    menu,
+/*play:-
     game_board_size(Size),
     initial_state(Size, GameState),
     game_loop(GameState).
-
+*/
 % gameloop, ends when game over flag is achieved
 game_loop(GameState):-
     game_over(Flag),

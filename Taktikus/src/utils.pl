@@ -36,6 +36,18 @@ numberLetter(9, 'I').
 numberLetter(9, 'i').
 numberLetter(9, '9').
 
+% Convert ASCII code to its respective decimal number
+ascii_convert(48, 0).
+ascii_convert(49, 1).
+ascii_convert(50, 2).
+ascii_convert(51, 3).
+ascii_convert(52, 4).
+ascii_convert(53, 5).
+ascii_convert(54, 6).
+ascii_convert(55, 7).
+ascii_convert(56, 8).
+ascii_convert(57, 9).
+
 count(_, [], 0).
 count(E, [E | T], N) :- count(E, T, NT),
                         N is NT + 1.
@@ -47,3 +59,31 @@ count_list(E, [H|T], N) :-
     count(E, H, HN),
     count_list(E, T, TN),
     N is HN + TN.
+
+% read_number(_,_,_):.
+read_number(Min,Max,Number):-
+    format('| Choose an Option (~d-~d) - ', [Min, Max]),
+    get_code(Ascii),
+    peek_char(Char),
+    Char == '\n',
+    ascii_convert(Ascii, Number),
+    Number =< Max, Number >= Min.
+
+read_number_board(Min,Max,Number):-
+    format('| Choose an Option (~d-~d) - ', [Min, Max]),
+    get_code(Ascii),
+    peek_char(Char),
+    Char == '\n',
+    ascii_convert(Ascii, Number),
+    Number =< Max, Number >= Min.
+
+
+read_number_board(Min,Max,Number):- nl,
+    write('Not a valid number, try again\n'),
+    format('| Valid Numbers are in the range (~d-~d) - ', [Min+3, Max]),nl,
+    read_number(Min, Max, Number).
+
+read_number(Min,Max,Number):- nl,
+    write('Not a valid number, try again\n'),
+    format('| Valid Numbers are in the range (~d-~d) - ', [Min, Max]),nl,
+    read_number(Min, Max, Number).
