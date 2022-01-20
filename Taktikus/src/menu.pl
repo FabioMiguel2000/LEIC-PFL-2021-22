@@ -6,10 +6,10 @@ dificulty(2, 'Normal').
 
 % logo/0, prints the game logo.
 logo:-
-    write('  ########   ###     ##    ##   ##  ######## ##     ##    #######   \n'),
+    write('  ########   ###     ##    ##   ##  ######## ##     ##    ######   \n'),
     write('     ##     ## ##    ##   ##    ##     ##    ##     ##   ##    ##   \n'),
     write('     ##    ##   ##   ##  ##     ##     ##    ##     ##   ##         \n'),
-    write('     ##   ##     ##  ####       ##     ##    ##     ##    #####     \n'),
+    write('     ##   ##     ##  #####      ##     ##    ##     ##    #####     \n'),
     write('     ##   #########  ##  ##     ##     ##    ##     ##        ##    \n'),
     write('     ##   ##     ##  ##   ##    ##     ##    ##     ##  ##    ##    \n'),
     write('     ##   ##     ##  ##    ##   ##     ##     #######    ######     \n').
@@ -30,7 +30,7 @@ menu:-
     option(2, 'Intructions'),
     option(0, 'EXIT'),
     header('*'),
-    read(Number),
+    read_number(0,2,Number),
     menu_option(Number).
 
 % menu_option(+Option)
@@ -53,7 +53,7 @@ pp_menu(0):-
 pp_menu(1):-
     header('Type a Board Size'),
     option(0, 'EXIT'),
-    read(X),
-    X > 2,
+    read_number(0,2,Number),
+    Number > 2,
     initial_state(X, GameState),
     game_loop(GameState).
