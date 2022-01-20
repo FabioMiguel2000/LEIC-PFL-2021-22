@@ -1,10 +1,10 @@
 
-:- include('view.pl').
+/*:- include('view.pl').
 :- include('board.pl').
 :- include('utils.pl').
 :- include('moves.pl').
 
-:- use_module(library(between)).
+:- use_module(library(between)).*/
 
 :- dynamic(game_over/1).
 
