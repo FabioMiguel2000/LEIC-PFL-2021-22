@@ -60,14 +60,30 @@ count_list(E, [H|T], N) :-
     count_list(E, T, TN),
     N is HN + TN.
 
+% read_number(_,_,_):.
 read_number(Min,Max,Number):-
     format('| Choose an Option (~d-~d) - ', [Min, Max]),
     get_code(Ascii),
     peek_char(Char),
     Char == '\n',
     ascii_convert(Ascii, Number),
-    Number <= Max, Number >= Min.
+    Number =< Max, Number >= Min.
 
-read_number(Min,Max,Number):-
+read_number_board(Min,Max,Number):-
+    format('| Choose an Option (~d-~d) - ', [Min, Max]),
+    get_code(Ascii),
+    peek_char(Char),
+    Char == '\n',
+    ascii_convert(Ascii, Number),
+    Number =< Max, Number >= Min.
+
+
+read_number_board(Min,Max,Number):- nl,
     write('Not a valid number, try again\n'),
+    format('| Valid Numbers are in the range (~d-~d) - ', [Min+3, Max]),nl,
+    read_number(Min, Max, Number).
+
+read_number(Min,Max,Number):- nl,
+    write('Not a valid number, try again\n'),
+    format('| Valid Numbers are in the range (~d-~d) - ', [Min, Max]),nl,
     read_number(Min, Max, Number).
