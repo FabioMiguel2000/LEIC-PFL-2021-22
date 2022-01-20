@@ -1,4 +1,6 @@
 :- use_module(library(lists)).
+:- reconsult('utils.pl').
+
 
 % This file contains all functions related to movements of the pieces on the board
 
@@ -35,6 +37,8 @@ element_on_board_moves(GameBoard, BoardSize, PlayerTurn, RowIndex, ColIndex, Acc
     index_increment(BoardSize, RowIndex, ColIndex, RowIndex2, ColIndex2),
     element_on_board_moves(GameBoard, BoardSize, PlayerTurn, RowIndex2, ColIndex2, AccList,ListOfMoves).
 
+% valid_moves_by_piece([5,1], [[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]],L).
+
 % valid_moves_by_piece(+PiecePosition, +GameBoard, -ListOfMoves)
 % For a given piece on the board, finds all the possible moves that it can take
 valid_moves_by_piece(PiecePosition, GameBoard, ListOfMoves):-
@@ -53,10 +57,7 @@ valid_moves_by_piece(PiecePosition, GameBoard, ListOfMoves):-
 aux_valid_moves_by_piece(DirectionType,[Row,Col], GameBoard, ListOfMoves):-
     aux_valid_moves_by_piece(DirectionType,[Row,Col], Row, Col, GameBoard, [], ListOfMoves).
 
-aux_valid_moves_by_piece(_,_,0,_,_, AccumulatorList, AccumulatorList):-
-    !.
-
-aux_valid_moves_by_piece(_,_,_,0,_, AccumulatorList, AccumulatorList):-
+aux_valid_moves_by_piece(_,_,0,0,_, AccumulatorList, AccumulatorList):-
     !.
 
 aux_valid_moves_by_piece(DirectionType,[RowIndex,ColIndex],RowIndex, ColIndex,GameBoard, AccumulatorList, ListOfMoves):-
@@ -68,22 +69,10 @@ aux_valid_moves_by_piece(DirectionType,[Row,Col],RowIndex, ColIndex,GameBoard, A
     nth1(RowIndex, GameBoard, BoardRow),
     nth1(ColIndex, BoardRow, Elem),
     Elem = empty,
+    !,
     append(AccumulatorList, [[[Row,Col], [RowIndex, ColIndex]]], AccumulatorList2),
     index_increment_by_direction(DirectionType, RowIndex, ColIndex, RowIndex2, ColIndex2),
     aux_valid_moves_by_piece(DirectionType,[Row,Col],RowIndex2, ColIndex2,GameBoard,AccumulatorList2, ListOfMoves).
 
 aux_valid_moves_by_piece(_,_,_,_,_, AccumulatorList, AccumulatorList).
 
-% index_increment_by_direction(+DirectionType, +RowIndex, +ColIndex, -RowIndex2, ColIndex2)
-% Depending on the type of direction, increments the index to loop through the board.
-index_increment_by_direction(top, RowIndex, ColIndex, RowIndex2, ColIndex):-
-    !,RowIndex2 is RowIndex - 1.
-
-index_increment_by_direction(bottom, RowIndex, ColIndex, RowIndex2, ColIndex):-
-    !,RowIndex2 is RowIndex + 1.
-
-index_increment_by_direction(right, RowIndex, ColIndex, RowIndex, ColIndex2):-
-    !,ColIndex2 is ColIndex + 1.
-
-index_increment_by_direction(left, RowIndex, ColIndex, RowIndex, ColIndex2):-
-    !,ColIndex2 is ColIndex - 1.

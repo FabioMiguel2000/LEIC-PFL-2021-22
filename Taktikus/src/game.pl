@@ -1,14 +1,13 @@
 
-:- include('view.pl').
-:- include('board.pl').
-:- include('utils.pl').
-:- include('moves.pl').
+:- consult('view.pl').
+:- consult('board.pl').
+:- consult('utils.pl').
+:- consult('moves.pl').
 
 :- use_module(library(between)).
 
 :- dynamic(game_over/1).
 
-game_board_size(8).     % game_board_size(-N), size of the game board, given by N*N, for Taktikus 8x8 is recommended
 
 game_over(false).       % game over flag, change to true when a game over condition is triggered
 
@@ -127,6 +126,8 @@ move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
 valid_moves([GameBoard|PlayerTurn], ListOfMoves):-
     game_board_size(BoardSize),
     element_on_board_moves(GameBoard, BoardSize, PlayerTurn, 1, 1, [], ListOfMoves).
+    % length(ListOfMoves, Size),
+    % write(Size).
 
 
 % change_board_element([[e,w,w,w,w],[e,e,e,e,e],[w,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).
@@ -134,7 +135,7 @@ valid_moves([GameBoard|PlayerTurn], ListOfMoves):-
 
 % valid_vertical_moves_of_piece([5,1], [[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]],L).
 
-% valid_moves([[[white,white,white,white,white,w,w,w],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[b,b,b,b,b,b,b,b]]| b], L).
+% valid_moves([[[white,white,white,white,white,white,white,white],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,b],[b,b,b,b,b,b,b,empty]]| b], L).
 
 % check_capture(GameBoard, DestRow, DestColumn, PlayerTurn).
 
@@ -198,6 +199,46 @@ aux_checkMidCapture(GameBoard, [VerificationRow1|VerificationCol1], [Verificatio
     change_board_element(TempNewGameBoard, VerificationRow2, VerificationCol2, empty, NewGameBoard).
 
 aux_checkMidCapture(GameBoard, _, _ ,_, GameBoard).
+
+
+% checkSurroundCapture([[[white,white,white,white,white,white,white,white],[empty,empty,empty,empty,empty,empty,empty,black],[empty,white,black,white,black,black,black,white],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,b],[b,b,b,b,b,b,b,empty]]| white], [3|4], L).
+checkSurroundCapture([GameBoard|PlayerTurn], PiecePosition, ListOfCaptures):-
+    checkSurroundCapture(right, GameBoard, PiecePosition, PiecePosition, PlayerTurn, [], ListOfCapturesRight),
+    checkSurroundCapture(left, GameBoard, PiecePosition, PiecePosition, PlayerTurn, [], ListOfCapturesLeft),
+    checkSurroundCapture(top, GameBoard, PiecePosition, PiecePosition, PlayerTurn, [], ListOfCapturesTop),
+    checkSurroundCapture(bottom, GameBoard, PiecePosition, PiecePosition, PlayerTurn, [], ListOfCapturesBottom),
+
+    append(ListOfCapturesRight, ListOfCapturesLeft, ListOfCapturesHorizontal),
+    append(ListOfCapturesTop, ListOfCapturesBottom, ListOfCapturesVertical),
+    append(ListOfCapturesHorizontal, ListOfCapturesVertical, ListOfCaptures).
+
+
+checkSurroundCapture(_, _, _,[0|0], _, _,[]):-
+    !.
+
+checkSurroundCapture(DirectionType, GameBoard, [Row|Col],[Row|Col], PlayerTurn, AccList,ListOfCaptures):-
+    !,
+    index_increment_by_direction(DirectionType, Row, Col, RowIndex2, ColIndex2),
+    checkSurroundCapture(DirectionType, GameBoard, [Row|Col], [RowIndex2|ColIndex2], PlayerTurn, AccList,ListOfCaptures).
+
+
+checkSurroundCapture(DirectionType, GameBoard, [Row|Col], [RowIndex|ColIndex], PlayerTurn, AccList,ListOfCaptures):-
+    nth1(RowIndex, GameBoard, GameBoardRow),
+    nth1(ColIndex, GameBoardRow, Ele),
+    \+ Ele = empty,
+    \+ Ele = PlayerTurn,
+    !,
+    append(AccList, [[RowIndex|ColIndex]], AccList2),
+    index_increment_by_direction(DirectionType, RowIndex, ColIndex, RowIndex2, ColIndex2),
+    checkSurroundCapture(DirectionType, GameBoard, [Row|Col], [RowIndex2|ColIndex2], PlayerTurn, AccList2,ListOfCaptures).
+
+checkSurroundCapture(_, GameBoard, _, [RowIndex|ColIndex], PlayerTurn, AccList,AccList):-
+    nth1(RowIndex, GameBoard, GameBoardRow),
+    nth1(ColIndex, GameBoardRow, Ele),
+    Ele = PlayerTurn,
+    !.
+
+checkSurroundCapture(_, _,_, _, _, _,[]). % if there is an empty space in between, then no capture
 
 
 game_over(GameBoard, OtherPlayer):- 
