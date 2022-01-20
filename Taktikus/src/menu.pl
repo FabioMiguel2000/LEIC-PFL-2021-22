@@ -12,9 +12,9 @@ logo:-
     write('     ##   ##     ##  ##   ##    ##     ##    ##     ##  ##    ##    \n'),
     write('     ##   ##     ##  ##    ##   ##     ##     #######    ######     \n').
 
-% header(+Header) prints the header of a menu using format.
-header(Header):-
-  format('~n~`*t ~p ~`*t~30|~n', [Header]).
+% menu_formater(+Info) prints the information of to be used within our menu using format.
+menu_formater(Info):-
+  format('~n~`*t ~p ~`*t~30|~n', [Info]).
 
 % option(+Option, +Details) prints the selected option menu-like with aditional details using format
 option(Option, Details):-
@@ -23,9 +23,9 @@ option(Option, Details):-
 % menu/0 presents a user friendly menu for game options.
 menu:-
     logo,
-    header('MENU'),
+    menu_formater('MENU'),
     option(1, 'Player x Player'),
     option(2, 'Intructions'),
     option(0, 'EXIT'),
-    header(''),
+    menu_formater('*'),
     read(Number).
