@@ -114,7 +114,8 @@ parse_input(_, _,_):-
 %               - Position = [RowNum,ColNum], (e.g. [1,5])
 move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
     change_board_element(GameBoard, Row, Column, empty, NewGameBoardTemp),
-    change_board_element(NewGameBoardTemp, NewRow, NewColumn, PlayerTurn, NewGameBoard),
+    change_board_element(NewGameBoardTemp, NewRow, NewColumn, PlayerTurn, NewGameBoardTemp2),
+    check_capture([NewGameBoardTemp2|PlayerTurn], [NewRow|NewColumn], NewGameBoard),
     log_movement_msg(PlayerTurn, Row,Column,NewRow,NewColumn),
     %   MISSING FUNCTION HERE! Check if there is a capture
     change_player_turn(PlayerTurn, NewPlayerTurn),
@@ -122,8 +123,6 @@ move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
     NewGameState = [NewGameBoard|NewPlayerTurn].
 
 % change_board_element([[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).
-
-% check_capture(GameBoard, PlayerTurn)
 
 % valid_moves(+GameState, -ListOfMoves)
 % Returns all valid moves with the game state given (game board and player turn).
@@ -139,12 +138,76 @@ valid_moves([GameBoard|PlayerTurn], ListOfMoves):-
 
 % valid_moves([[[white,white,white,white,white,w,w,w],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[b,b,b,b,b,b,b,b]]| b], L).
 
+% check_capture(GameBoard, DestRow, DestColumn, PlayerTurn).
+
+% check_capture_row(GameBoardRow, DestRow, PlayerTurn, ColIndex):-
+%     nth1(ColIndex, GameBoardRow, Ele),
+%     verify_capture(PlayerTurn, Ele)
+    
+% verify_capture(PlayerTurn, PlayerTurn). % no cature yet
+
+% verify_capture(PlayerTurn, Ele):-    %There might be a capture
+%     \+ PlayerTurn = Ele,
+%     % check consecutive Opponents pieces until Own Piece Met
+
+
+% check_until_own_piece(PlayerTurn, Elem, ColIndex, CapturePositionsList):-
+%     %Save current position piece into the list
+%     ColIndex2 is ColIndex +1,
+%     check_until_own_piece(PlayerTurn, ColIndex2, CapturePositionsList).
+
+% check_until_own_piece(PlayerTurn, PlayerTurn, ColIndex, CapturePositionsList):-
+%     %remove all pieces from CapturePositionsList.
+
+check_capture([GameBoard|PlayerTurn], Position, NewGameBoard):-
+    game_board_size(BoardSize),
+    checkMidCapture(row, GameBoard, Position, PlayerTurn, BoardSize, TempNewGameBoard),
+    checkMidCapture(col, TempNewGameBoard, Position, PlayerTurn, BoardSize, NewGameBoard).
+
+% check_capture([[[w,b,w,w,b],[b,b,b,w,w],[e,e,e,e,b],[e,e,e,e,e],[b,b,b,b,b]]|w], [1|1], NewGB).
+
+checkMidCapture(row, GameBoard, [_|0], _, _, GameBoard):-
+    !.
+checkMidCapture(row, GameBoard, [_|GameBoardSize], _, GameBoardSize, GameBoard):-
+    !.
+checkMidCapture(col, GameBoard, [0|_], _, _, GameBoard):-
+    !.
+checkMidCapture(col, GameBoard, [GameBoardSize|_], _, GameBoardSize, GameBoard):-
+    !.
+
+checkMidCapture(row, GameBoard, [PieceRow|PieceCol], PlayerTurn, _, NewGameBoard):-
+    VerificationCol1 is PieceCol +1,
+    VerificationCol2 is PieceCol -1,
+    aux_checkMidCapture(GameBoard, [PieceRow|VerificationCol1], [PieceRow|VerificationCol2], PlayerTurn, NewGameBoard).
+
+checkMidCapture(col, GameBoard, [PieceRow|PieceCol], PlayerTurn, _, NewGameBoard):-
+    VerificationRow1 is PieceRow +1,
+    VerificationRow2 is PieceRow -1,
+    aux_checkMidCapture(GameBoard, [VerificationRow1|PieceCol], [VerificationRow2|PieceCol], PlayerTurn, NewGameBoard).
+
+
+aux_checkMidCapture(GameBoard, [VerificationRow1|VerificationCol1], [VerificationRow2|VerificationCol2] ,PlayerTurn, NewGameBoard):-
+    nth1(VerificationRow1, GameBoard, GameBoardRow1),
+    nth1(VerificationCol1, GameBoardRow1, Ele1),
+    \+ Ele1 = empty,
+    \+ Ele1 = PlayerTurn,
+    nth1(VerificationRow2, GameBoard, GameBoardRow2),
+    nth1(VerificationCol2, GameBoardRow2, Ele2),
+    \+ Ele2 = empty,
+    \+ Ele2 = PlayerTurn,
+    !,  % Condition for this type of capture is met, next, remove Ele1 and Ele2 from the board
+    change_board_element(GameBoard, VerificationRow1, VerificationCol1, empty, TempNewGameBoard),
+    change_board_element(TempNewGameBoard, VerificationRow2, VerificationCol2, empty, NewGameBoard).
+
+aux_checkMidCapture(GameBoard, _, _ ,_, GameBoard).
 
 
 game_over(GameBoard, OtherPlayer):- 
     count_list(OtherPlayer, GameBoard, Pawns),      % Checks if game over condition is met
     Pawns < 2,      % If game over condition is achieved
     !,
+    retract(game_over(false)),
+    asserta(game_over(true)),
     write('You win !').
 
 game_over(_,_). %If not game over
