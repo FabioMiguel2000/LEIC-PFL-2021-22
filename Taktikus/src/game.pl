@@ -112,7 +112,8 @@ parse_input(_, _,_):-
 move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
     change_board_element(GameBoard, Row, Column, empty, NewGameBoardTemp),
     change_board_element(NewGameBoardTemp, NewRow, NewColumn, PlayerTurn, NewGameBoardTemp2),
-    check_capture([NewGameBoardTemp2|PlayerTurn], [NewRow|NewColumn], NewGameBoard),
+    checkCapture([NewGameBoardTemp2|PlayerTurn], [NewRow|NewColumn], ListOfCaptures),
+    removeCapturedPieces(NewGameBoardTemp2, ListOfCaptures, NewGameBoard),
     log_movement_msg(PlayerTurn, Row,Column,NewRow,NewColumn),
     %   MISSING FUNCTION HERE! Check if there is a capture
     change_player_turn(PlayerTurn, NewPlayerTurn),
@@ -158,34 +159,50 @@ valid_moves([GameBoard|PlayerTurn], ListOfMoves):-
 % check_until_own_piece(PlayerTurn, PlayerTurn, ColIndex, CapturePositionsList):-
 %     %remove all pieces from CapturePositionsList.
 
-check_capture([GameBoard|PlayerTurn], Position, NewGameBoard):-
+checkCapture(GameState, Position, ListOfCaptures):-
+    checkMidCapture(GameState, Position, ListOfMidCaptures),        % Finds all captures that happened due to the first condition capture
+    checkSurroundCapture(GameState, Position, ListOfSurroundCaptures), % Finds all captures that happened due to the second condition capture
+    append(ListOfMidCaptures, ListOfSurroundCaptures, ListOfCaptures).
+
+
+removeCapturedPieces(GameBoard, [], GameBoard):-
+    !.
+
+removeCapturedPieces(GameBoard, [[Row,Col]| Rest], NewGameBoard):-
+    change_board_element(GameBoard, Row, Col, empty, TempNewGameBoard),
+    removeCapturedPieces(TempNewGameBoard, Rest, NewGameBoard).
+
+
+checkMidCapture([GameBoard|PlayerTurn], Position, ListOfCaptures):-
     game_board_size(BoardSize),
-    checkMidCapture(row, GameBoard, Position, PlayerTurn, BoardSize, TempNewGameBoard),
-    checkMidCapture(col, TempNewGameBoard, Position, PlayerTurn, BoardSize, NewGameBoard).
+    checkMidCapture(row, GameBoard, Position, PlayerTurn, BoardSize, ListOfCaptures1),
+    checkMidCapture(col, GameBoard, Position, PlayerTurn, BoardSize, ListOfCaptures2),
+    append(ListOfCaptures1, ListOfCaptures2, ListOfCaptures).
 
-% check_capture([[[w,b,w,w,b],[b,b,b,w,w],[e,e,e,e,b],[e,e,e,e,e],[b,b,b,b,b]]|w], [1|1], NewGB).
 
-checkMidCapture(row, GameBoard, [_|0], _, _, GameBoard):-
+% check_capture([[[w,b,w,w,b],[b,b,b,w,w],[e,e,e,e,b],[e,e,e,e,e],[b,b,b,b,b]]|w], [2|5], L).
+
+checkMidCapture(row, _, [_|0], _, _, []):-
     !.
-checkMidCapture(row, GameBoard, [_|GameBoardSize], _, GameBoardSize, GameBoard):-
+checkMidCapture(row, _, [_|GameBoardSize], _, GameBoardSize, []):-
     !.
-checkMidCapture(col, GameBoard, [0|_], _, _, GameBoard):-
+checkMidCapture(col, _, [0|_], _, _, []):-
     !.
-checkMidCapture(col, GameBoard, [GameBoardSize|_], _, GameBoardSize, GameBoard):-
+checkMidCapture(col, _, [GameBoardSize|_], _, GameBoardSize, []):-
     !.
 
-checkMidCapture(row, GameBoard, [PieceRow|PieceCol], PlayerTurn, _, NewGameBoard):-
+checkMidCapture(row, GameBoard, [PieceRow|PieceCol], PlayerTurn, _, ListOfCaptures):-
     VerificationCol1 is PieceCol +1,
     VerificationCol2 is PieceCol -1,
-    aux_checkMidCapture(GameBoard, [PieceRow|VerificationCol1], [PieceRow|VerificationCol2], PlayerTurn, NewGameBoard).
+    aux_checkMidCapture(GameBoard, [PieceRow|VerificationCol1], [PieceRow|VerificationCol2], PlayerTurn, ListOfCaptures).
 
-checkMidCapture(col, GameBoard, [PieceRow|PieceCol], PlayerTurn, _, NewGameBoard):-
+checkMidCapture(col, GameBoard, [PieceRow|PieceCol], PlayerTurn, _, ListOfCaptures):-
     VerificationRow1 is PieceRow +1,
     VerificationRow2 is PieceRow -1,
-    aux_checkMidCapture(GameBoard, [VerificationRow1|PieceCol], [VerificationRow2|PieceCol], PlayerTurn, NewGameBoard).
+    aux_checkMidCapture(GameBoard, [VerificationRow1|PieceCol], [VerificationRow2|PieceCol], PlayerTurn, ListOfCaptures).
 
 
-aux_checkMidCapture(GameBoard, [VerificationRow1|VerificationCol1], [VerificationRow2|VerificationCol2] ,PlayerTurn, NewGameBoard):-
+aux_checkMidCapture(GameBoard, [VerificationRow1|VerificationCol1], [VerificationRow2|VerificationCol2] ,PlayerTurn, ListOfCaptures):-
     nth1(VerificationRow1, GameBoard, GameBoardRow1),
     nth1(VerificationCol1, GameBoardRow1, Ele1),
     \+ Ele1 = empty,
@@ -195,10 +212,11 @@ aux_checkMidCapture(GameBoard, [VerificationRow1|VerificationCol1], [Verificatio
     \+ Ele2 = empty,
     \+ Ele2 = PlayerTurn,
     !,  % Condition for this type of capture is met, next, remove Ele1 and Ele2 from the board
-    change_board_element(GameBoard, VerificationRow1, VerificationCol1, empty, TempNewGameBoard),
-    change_board_element(TempNewGameBoard, VerificationRow2, VerificationCol2, empty, NewGameBoard).
+    ListOfCaptures = [[VerificationRow1,VerificationCol1], [VerificationRow2,VerificationCol2]].
+    % change_board_element(GameBoard, VerificationRow1, VerificationCol1, empty, TempNewGameBoard),
+    % change_board_element(TempNewGameBoard, VerificationRow2, VerificationCol2, empty, NewGameBoard).
 
-aux_checkMidCapture(GameBoard, _, _ ,_, GameBoard).
+aux_checkMidCapture(_, _, _ ,_, []).
 
 
 % checkSurroundCapture([[[white,white,white,white,white,white,white,white],[empty,empty,empty,empty,empty,empty,empty,black],[empty,white,black,white,black,black,black,white],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,b],[b,b,b,b,b,b,b,empty]]| white], [3|4], L).
@@ -228,7 +246,7 @@ checkSurroundCapture(DirectionType, GameBoard, [Row|Col], [RowIndex|ColIndex], P
     \+ Ele = empty,
     \+ Ele = PlayerTurn,
     !,
-    append(AccList, [[RowIndex|ColIndex]], AccList2),
+    append(AccList, [[RowIndex,ColIndex]], AccList2),
     index_increment_by_direction(DirectionType, RowIndex, ColIndex, RowIndex2, ColIndex2),
     checkSurroundCapture(DirectionType, GameBoard, [Row|Col], [RowIndex2|ColIndex2], PlayerTurn, AccList2,ListOfCaptures).
 
