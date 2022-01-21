@@ -1,3 +1,5 @@
+game_board_size(8).     % game_board_size(-N), size of the game board, given by N*N, for Taktikus 8x8 is recommended
+
 numberLetter(1, 'A').
 numberLetter(1, 'a').
 numberLetter(1, '1').
@@ -69,6 +71,11 @@ read_number(Min,Max,Number):-
     ascii_convert(Ascii, Number),
     Number =< Max, Number >= Min.
 
+read_number(Min,Max,Number):- nl,
+    write('Not a valid number, try again\n'),
+    format('| Valid Numbers are in the range (~d-~d) - ', [Min, Max]),nl,
+    read_number(Min, Max, Number).
+
 read_number_board(Min,Max,Number):-
     format('| Choose an Option (~d-~d) - ', [Min, Max]),
     get_code(Ascii),
@@ -83,7 +90,39 @@ read_number_board(Min,Max,Number):- nl,
     format('| Valid Numbers are in the range (~d-~d) - ', [Min+3, Max]),nl,
     read_number(Min, Max, Number).
 
-read_number(Min,Max,Number):- nl,
-    write('Not a valid number, try again\n'),
-    format('| Valid Numbers are in the range (~d-~d) - ', [Min, Max]),nl,
-    read_number(Min, Max, Number).
+
+% index_increment_by_direction(+DirectionType, +RowIndex, +ColIndex, -RowIndex2, ColIndex2)
+% Depending on the type of direction, increments the index to loop through the board.
+
+index_increment_by_direction(top, 1, _, 0, 0):-
+    !.
+index_increment_by_direction(top, RowIndex, ColIndex, RowIndex2, ColIndex):-
+    !,RowIndex2 is RowIndex - 1.
+
+
+index_increment_by_direction(bottom, RowIndex, _, RowIndex2, ColIndex2):-
+    game_board_size(BoardSize),
+    RowIndex = BoardSize,
+    !,
+    RowIndex2 = 0,
+    ColIndex2 = 0.
+
+index_increment_by_direction(bottom, RowIndex, ColIndex, RowIndex2, ColIndex):-
+    !,RowIndex2 is RowIndex + 1.
+
+index_increment_by_direction(right, _, ColIndex, RowIndex2, ColIndex2):-
+    game_board_size(BoardSize),
+    ColIndex = BoardSize,
+    !,
+    RowIndex2 = 0,
+    ColIndex2 = 0.
+
+index_increment_by_direction(right, RowIndex, ColIndex, RowIndex, ColIndex2):-
+    !,ColIndex2 is ColIndex + 1.
+
+
+index_increment_by_direction(left, _, 1, 0, 0):-
+    !.
+
+index_increment_by_direction(left, RowIndex, ColIndex, RowIndex, ColIndex2):-
+    !,ColIndex2 is ColIndex - 1.

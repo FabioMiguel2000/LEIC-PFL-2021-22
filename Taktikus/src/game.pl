@@ -1,25 +1,27 @@
 
-/*:- include('view.pl').
-:- include('board.pl').
-:- include('utils.pl').
-:- include('moves.pl').
 
-:- use_module(library(between)).*/
+:- consult('view.pl').
+:- consult('board.pl').
+:- consult('moves.pl').
+:- consult('capture.pl').
+:- consult('utils.pl').
+
+
+:- use_module(library(between)).
 
 :- dynamic(game_over/1).
 
-game_board_size(8).     % game_board_size(-N), size of the game board, given by N*N, for Taktikus 8x8 is recommended
 
 game_over(false).       % game over flag, change to true when a game over condition is triggered
 
 
 
 % main function that begins the game
-/*play:-
+play:-
     game_board_size(Size),
     initial_state(Size, GameState),
     game_loop(GameState).
-*/
+
 % gameloop, ends when game over flag is achieved
 game_loop(GameState):-
     game_over(Flag),
@@ -112,7 +114,9 @@ parse_input(_, _,_):-
 %               - Position = [RowNum,ColNum], (e.g. [1,5])
 move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
     change_board_element(GameBoard, Row, Column, empty, NewGameBoardTemp),
-    change_board_element(NewGameBoardTemp, NewRow, NewColumn, PlayerTurn, NewGameBoard),
+    change_board_element(NewGameBoardTemp, NewRow, NewColumn, PlayerTurn, NewGameBoardTemp2),
+    checkCapture([NewGameBoardTemp2|PlayerTurn], [NewRow|NewColumn], ListOfCaptures),
+    removeCapturedPieces(NewGameBoardTemp2, ListOfCaptures, NewGameBoard),
     log_movement_msg(PlayerTurn, Row,Column,NewRow,NewColumn),
     %   MISSING FUNCTION HERE! Check if there is a capture
     change_player_turn(PlayerTurn, NewPlayerTurn),
@@ -121,28 +125,21 @@ move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
 
 % change_board_element([[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).
 
-% check_capture(GameBoard, PlayerTurn)
-
 % valid_moves(+GameState, -ListOfMoves)
 % Returns all valid moves with the game state given (game board and player turn).
 valid_moves([GameBoard|PlayerTurn], ListOfMoves):-
     game_board_size(BoardSize),
     element_on_board_moves(GameBoard, BoardSize, PlayerTurn, 1, 1, [], ListOfMoves).
-
-
-% change_board_element([[e,w,w,w,w],[e,e,e,e,e],[w,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).
-% valid_horizontal_moves_of_piece([2,2], [[e,w,w,w,w],[w,w,w,e,w],[e,e,e,e,e],[w,e,e,e,e],[e,b,b,b,b]],L).
-
-% valid_vertical_moves_of_piece([5,1], [[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]],L).
-
-% valid_moves([[[white,white,white,white,white,w,w,w],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty],[b,b,b,b,b,b,b,b]]| b], L).
-
+    % length(ListOfMoves, Size),
+    % write(Size).
 
 
 game_over(GameBoard, OtherPlayer):- 
     count_list(OtherPlayer, GameBoard, Pawns),      % Checks if game over condition is met
     Pawns < 2,      % If game over condition is achieved
     !,
+    retract(game_over(false)),
+    asserta(game_over(true)),
     write('You win !').
 
 game_over(_,_). %If not game over
