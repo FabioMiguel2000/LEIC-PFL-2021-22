@@ -1,5 +1,3 @@
-
-
 :- consult('view.pl').
 :- consult('board.pl').
 :- consult('moves.pl').
