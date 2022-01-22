@@ -137,8 +137,9 @@ game_over(GameBoard, OtherPlayer):-
     Pawns < 2,      % If game over condition is achieved
     !,
     retract(game_over(false)),
-    asserta(game_over(true)),
-    write('You win !').
+    asserta(game_over(true)),nl,
+    change_player_turn(OtherPlayer, NewPlayerTurn),
+    format("~s player win !", [NewPlayerTurn] ), nl.
 
 game_over(_,_). %If not game over
 
