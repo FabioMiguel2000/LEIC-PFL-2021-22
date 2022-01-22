@@ -30,5 +30,7 @@
 
 ## How to play
 
+We endup choosing a very straight foward and simple way to play, once it's your turn all the player need to type in is the current position of a pawn and the desired new position.
+
 ### Movement
 - Each turn a player is asked to input their movement, the input should be similar to the standard method for recording and describing the *moves in a game of chess for a pawn* (e.g. to move a piece on position B1 to B3, input `b1b3.`, everything together without spaces)
