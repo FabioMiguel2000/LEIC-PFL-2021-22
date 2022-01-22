@@ -6,13 +6,13 @@ dificulty(2, 'Normal').
 
 % logo/0, prints the game logo.
 logo:-
-    write('  ########   ###     ##    ##   ##  ######## ##     ##    ######   \n'),
+    write('  ########   ###     ##    ##   ##  ######## ##     ##    #######  \n'),
     write('     ##     ## ##    ##   ##    ##     ##    ##     ##   ##    ##   \n'),
     write('     ##    ##   ##   ##  ##     ##     ##    ##     ##   ##         \n'),
     write('     ##   ##     ##  #####      ##     ##    ##     ##    #####     \n'),
     write('     ##   #########  ##  ##     ##     ##    ##     ##        ##    \n'),
     write('     ##   ##     ##  ##   ##    ##     ##    ##     ##  ##    ##    \n'),
-    write('     ##   ##     ##  ##    ##   ##     ##     #######    ######     \n').
+    write('     ##   ##     ##  ##    ##   ##     ##     #######   #######     \n').
 
 % menu_formater(+Info) prints the information of to be used within our menu using format.
 menu_formater(Info):-
