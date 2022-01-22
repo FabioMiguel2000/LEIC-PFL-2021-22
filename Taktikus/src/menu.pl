@@ -60,7 +60,6 @@ menu_pxp(Size):-
 % When facing another player    
 menu_game(1):-
     board_selection(Size),
-    read_number_board(0,9,Size),
     menu_pxp(Size).
 
 % Selects the size of the board   
@@ -80,7 +79,7 @@ menu_game(2):-
 %    menu_pxp(0)
 
 % When player selecs to play angainst machine
-menu_pxc(2):-
+/*menu_pxc(2):-
     ai_level(Opt), % Yet to be implemented ??
     initial_state(Size, GameState),
     game_loop(GameState).*/
