@@ -21,19 +21,19 @@ bot_level(1).
 game_over(false).       % game over flag, change to true when a game over condition is triggered
 
 % main function that begins the game
-play:-
-    bot(Bot),
-    Bot = false,
-    !,
-    game_board_size(Size),
-    initial_state(Size, GameState),
-    game_loop(GameState).
+play:- menu.
+    # bot(Bot),
+    # Bot = false,
+    # !,
+    # menu(Size),
+    # initial_state(Size, GameState),
+    # game_loop(GameState).
 
-% with bot player
-play:-
-    game_board_size(Size),
-    initial_state(Size, GameState),
-    computer_player_game(GameState).
+# % with bot player
+# play:-
+#     game_board_size(Size),
+#     initial_state(Size, GameState),
+#     computer_player_game(GameState).
 
 % Bot Turn
 computer_player_game([GameBoard|PlayerTurn]):-

@@ -23,7 +23,7 @@ option(Option, Details):-
     format('*~t~d~t~5|~t~a~t~20+~t*~30|~n',[Option, Details]).
 
 % menu/0 presents a user friendly menu for game options.
-menu:-
+menu(Size):-
     logo,
     menu_formater('MENU'),
     option(1, 'Player x Player'),
@@ -76,14 +76,14 @@ menu_game(2):-
     board_selection(Size),
     menu_pxc(Size).
 
-%menu_pxc(0):-
-%    menu_pxp(0)
+menu_pxc(0):-
+    menu_pxp(0).
 
-% When player selecs to play angainst machine
-/*menu_pxc(2):-
-    ai_level(Opt), % Yet to be implemented ??
+% When player selecs to play angainst machine ai_level(Opt), % Yet to be implemented ??
+menu_pxc(Size):- 
+    bot(black),
     initial_state(Size, GameState),
-    game_loop(GameState).*/
+    computer_player_game(GameState).
 
     
 
