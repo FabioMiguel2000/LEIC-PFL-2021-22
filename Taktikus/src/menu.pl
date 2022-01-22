@@ -68,6 +68,7 @@ board_selection(Size):-
     option(3, 'Will produce a 3x3 board'),
     option(8, 'Will produce a 8x8 board'),
     option(0, 'EXIT'),
+    menu_formater('*'),
     read_number_board(0,9,Size).
 
 % When facing the computer
