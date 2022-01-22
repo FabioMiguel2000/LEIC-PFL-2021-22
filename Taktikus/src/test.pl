@@ -1,3 +1,5 @@
+:- reconsult('utils.pl').
+
 test(X):-
     repeat,
     read(X),
@@ -20,12 +22,22 @@ test:-
     write('        |         |         |\n'),
     write('        + - - - - + - - - - +\n').
 
+
+initital_game_board([[white,white,white,white,white,white,white,white],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,black,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[black,black,black,black,black,black,black,black]]).
+
+
+
 test2:-
-    put_code(9556), put_code(9552), put_code(9552),put_code(9552),put_code(9552),put_code(9552),put_code(9574),nl,
-    put_code(9553), write('  A  '), put_code(9553),nl,
-    % put_code(9553), write('   '), put_code(9553),nl,
-    % put_code(9553), write('   '), put_code(9553),nl,
-    put_code(9562), put_code(9552), put_code(9552),put_code(9552),put_code(9552),put_code(9552),put_code(9565),nl.
+    initital_game_board(GB),
+    display_board(GB).
+
 
 
 

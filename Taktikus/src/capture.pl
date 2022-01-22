@@ -5,7 +5,7 @@
 
 
 % removeCapturedPieces(+GameBoard, +CapturedPiecesList, -NewGameBoard)
-% removes all the pieces on the positions contained by the list <CapturedPiecesList> and returns the new game board
+% @description: removes all the pieces on the positions contained by the list <CapturedPiecesList> and returns the new game board
 removeCapturedPieces(GameBoard, [], GameBoard):-
     !.
     
