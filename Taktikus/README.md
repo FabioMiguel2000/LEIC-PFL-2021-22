@@ -23,7 +23,7 @@ Taktikus is a strategy game in chess-like fashion, where two players attempts to
 ### Requisites
 - SICStus Prolog
 
-### UI Configuration:
+### Font Configuration For SICStus on Windows:
 - Font: Lucida Console
 - Font style: Regular
 - Font Size: 14
@@ -34,43 +34,23 @@ Taktikus is a strategy game in chess-like fashion, where two players attempts to
 3. Run `compile('game.pl').` to compile the game application or if you are using the console `File` -> `Compile` -> `game.pl`;
 4. To start the game, run `play.`
 
-## Game Logic
-***
-
-### Board
-
-The board is represented by a list of lists, in which each sublist is a line in the board.
-The first and last lists are the player marbles (white and black respectively) and the lists in between are the empty spaces.
-
-??? Print of the Board (If possible empty)
-
-The predicate used in this part is a view component `display_game(+GameState)`
-??? Explain better the predicate?
-
-### Player
-
-The player can choose to manipulate the black or white marbles.
-
-??? Talk about the predicate related to player
-
-In the board graphic representation, for the white player we are using a white coin and for the black players we are using a black coin.
-
-The predicate `ui/2` to associate the player marble with a ASCII code.
-```
-ui(black, 10123).
-ui(white, 10112).
-ui(empty, 43).
-```
-
-
 ### How to play
 
 In this version of the game there are two main game mode:
 
 - Player x Player - Where two players face each other, taking turns.
-- Player x Computer Where the player faces the machine, with a single level of dificulty so far.
+- Player x Computer Where the player faces the machine, with a single level of dificulty so far (Level 1 computer, which makes random moves).
+- Different Board Sizes can be selected (from 3x3 to 9x9), but 8x8 is recommended to be played, since it is the official game board size.
 
-Here the predicates `game_loop` and `change_game_turn` are the responsible for the game cycle and deciding the turn for each player.
+### Board
+Our `GameState` predicate is composed of `GameBoard` and `PlayerTurn` (`GameState` = `[GameState|PlayerTurn]`), where:
+
+- `GameBoard` is represented by a 2d list, in which each sublist is a line in the board.
+In the `initial_state(+Size, -GameState)` predicate, an initial gameboard is generated with first and last rows being the player pieces (white and black respectively) and the rest being the empty cells that the pieces can move.
+- `PlayerTurn` can either be a value of `black` or `white` indicating the current player turn.
+
+The view of the game is output by the predicate `display_game(+GameState)`, where it loops through the `GameBoard` cell by cell and outputs the respective element, and then outputs the player that has to make a move in the current turn.
+
 
 ![main menu](./files/menu.png)
 
@@ -92,35 +72,43 @@ After every movement, being that from the player or the computer, we have presen
 
 ![menu computer](./files/8x8_board.png)
 
+### Movement
+ Each turn a player is asked to input their movement, the input should be similar to the standard method for recording and describing the *moves in a game of chess for a pawn* (e.g. to move a piece on position B1 to B3, input `b1b3.`, everything together without spaces)
+
+ The input that the player entered, is validated and parsed, when an invalid move is taken, a error message is returned and the player is asked to input again.
+
+The validation proccess is also combined with the predicate `valid_moves_by_piece(+PiecePosition, +GameBoard, -ListOfMoves)` by checking if the move that the player has entered is one of a valid moves on the `ListOfMoves`.
+
+After parsing and validating the input, a move is executed using the predicate `move(+GameState, +Move, -NewGameState)`, which replaces the piece on the old position on the board by `empty`, and the new position is replaced with current player's piece.
+
 
 ### List of valid moves
 
 The combination of row column determines what is a position, and the direction of a move can only be vertical and horizontal movements (no diagonals).
 
-The predicates used for this validations is  `valid_moves_by_piece(+PiecePosition, +GameBoard, -ListOfMoves)`
-
-??? Explain  better the predicate
-
 We endup choosing a very straight foward and simple way to play, once it's your turn all the player need to type in is the current position of a marble and the desired new position.
 
+The predicates used for this validations is  `valid_moves_by_piece(+PiecePosition, +GameBoard, -ListOfMoves)`
 
-### Movement
- Each turn a player is asked to input their movement, the input should be similar to the standard method for recording and describing the *moves in a game of chess for a pawn* (e.g. to move a piece on position B1 to B3, input `b1b3.`, everything together without spaces)
+The predicate `valid_moves(+GameState, -ListOfMoves).`, uses the current game state (game board + current player turn) to find out all the possible moves that the current player can make, this is done by checking all the horizontal and vertical valid moves that each piece of their color can take and stored into the `ListOfMoves`.
 
-??? Explain the predicates used ??
 
 ### Computer
 
-???
+The game can be also played in the player x computer mode, where the player is first asked in the main menu the color that one wants to play, after that it will be headed into a `computer_player_gameloop`, where the computer and the player takes turns on their play.
+
+1. On computer's turn, it chooses a move using the `choose_move(+GameState, +Level, -Move)` , which uses the predicate mentioned previously `valid_moves(+GameState, -ListOfMoves)` to give a list of valid moves that the current pieces can make.
+2. Then, the predicate `random` is used to give a random index in the list of valid moves, and this move is selected, and played by the computer.
 
 
 ### Game Over
 
-For validation of game over, we used a combination of verification in the Board from within the Game State and Setting a Flag from within the `game_loop`.
+For validation of game over, we used a combination of verification in the Board from within the Game State and Setting a Flag from within the game loop predicates (this includes `computer_player_gameloop` and `player_player_gameloop` predicates).
 
-1. After a movement, we check if there was a capture and if there was a capture we check the ammount of left marbles with the oposite player.
-2. After verify this, we check if this ammount is inferior to 2 and if is, we set the player winner to the current player.
-3. After that in the `game_loop` We set the used flag to true and we end the current game.
+1. For each game loop, we first check if the current game state (given by `GameState`) has sastified a condition to end the game, using the predicate `game_over(+GameState, -Winner)`.
+2. This predicate checks whether the current player has its pieces amount inferior to 2, and if so, we can conclude that the previous player has played a move that gave a 'checkmate' to this current player, and therefore conclude with a winner, and the game loop is stopped.
+3. If there is not a game over condition, then `Winner` will be given the value `none` and the game will be continued.
+
 
 ### Example of Game winning
 
@@ -132,11 +120,6 @@ The capture can occour if horizontally or vertically:
 ![menu computer](./files/white_before.png)
 ![menu computer](./files/white_win.png)
 
-
-
-### Game State evaluation
-
-??? If we manage to have this, explain a little this predicate `value(+GameState, +Player, -Value)`
 
 ### Conslusions
 
