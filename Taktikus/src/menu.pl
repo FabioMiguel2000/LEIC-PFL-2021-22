@@ -1,4 +1,3 @@
-@ :- include('game.pl').
 
 % dificulty(+Code, -Difficulty) returns the difficulty of the game associated with a code.
 dificulty(1, 'Easy').
@@ -6,6 +5,7 @@ dificulty(2, 'Normal').
 
 % logo/0, prints the game logo.
 logo:-
+    nl,nl,nl,nl,
     write('***********************************************************************************'),nl,
     write('*                                                                                 *'),nl,
     write('*  @@@@@@@@   @@@     @@    @@  @@@@@@@@@  @@  @@    @@  @@      @@     @@@@@@    *'),nl,
@@ -67,6 +67,11 @@ menu_game(1):-
     board_selection(Size),
     menu_pxp(Size).
 
+% When facing the computer
+menu_game(2):-
+    board_selection(Size),
+    menu_pxc(Size).
+
 % Selects the size of the board   
 board_selection(Size):-
     menu_formater('Type a Board Size'),
@@ -76,11 +81,6 @@ board_selection(Size):-
     menu_formater('*'),nl,
     format('Please select a value between ~d and ~d',[3,9]),nl,
     read_number(0,9,Size).
-
-% When facing the computer
-menu_game(2):-
-    board_selection(Size),
-    menu_pxc(Size).
 
 menu_pxc(0):-
     menu_pxp(0).

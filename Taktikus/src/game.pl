@@ -23,18 +23,6 @@ game_over(false).       % game over flag, change to true when a game over condit
 
 % main function that begins the game
 play:- menu.
-    % bot(Bot),
-    % Bot = false,
-    % !,
-    % menu(Size),
-    % initial_state(Size, GameState),
-    % game_loop(GameState).
-
- % with bot player
-% play:-
-%     game_board_size(Size),
-%     initial_state(Size, GameState),
-%     computer_player_game(GameState).
 
 % Bot Turn
 computer_player_game([GameBoard|PlayerTurn]):-
@@ -152,7 +140,8 @@ move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
     %   MISSING FUNCTION HERE! Check if there is a capture
     change_player_turn(PlayerTurn, NewPlayerTurn),
     NewGameState = [NewGameBoard|NewPlayerTurn],
-    game_over(NewGameState, Winner).
+    game_over(NewGameState, Winner),
+    Winner = none.                          % If there is a winner, the move function will fail and the game loop will terminate.
 
 % change_board_element([[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).
 

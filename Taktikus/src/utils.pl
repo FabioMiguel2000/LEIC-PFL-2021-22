@@ -68,7 +68,7 @@ read_number(Min,Max,Number):-
     Number =< Max, Number >= Min.
 
 read_number(Min,Max,Number):- 
-    write('\nInvalid option! \nChoose an option from the current menu'),nl,
+    write('\e[0;91m\nInvalid option! \nChoose an option from the current menu\n\e[0;39m'),nl,
     read_number(Min, Max, Number).
 
 % index_increment_by_direction(+DirectionType, +RowIndex, +ColIndex, -RowIndex2, ColIndex2)
