@@ -1,5 +1,3 @@
-@ :- include('game.pl').
-
 % dificulty(+Code, -Difficulty) returns the difficulty of the game associated with a code.
 dificulty(1, 'Easy').
 dificulty(2, 'Normal').

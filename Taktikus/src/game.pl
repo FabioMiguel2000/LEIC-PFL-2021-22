@@ -54,7 +54,7 @@ computer_player_game(GameState):-
     move(GameState, Move, NewGameState),   
     computer_player_game(NewGameState).
 
-% gameloop, ends when game over flag is achieved
+% game_loop/1, ends when game over flag is achieved
 game_loop(GameState):-
     game_over(Flag),
     Flag = false,

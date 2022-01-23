@@ -11,4 +11,4 @@
 :- consult('game.pl').
 :- consult('menu.pl').
 
-takitus:- menu.
+takitus:- play.

@@ -36,18 +36,6 @@ numberLetter(9, 'i').
 numberLetter(9, 'I').
 numberLetter(9, '9').
 
-% Convert ASCII code to its respective decimal number
-/*ascii_convert(48, 0).
-ascii_convert(49, 1).
-ascii_convert(50, 2).
-ascii_convert(51, 3).
-ascii_convert(52, 4).
-ascii_convert(53, 5).
-ascii_convert(54, 6).
-ascii_convert(55, 7).
-ascii_convert(56, 8).
-ascii_convert(57, 9).*/
-
 count(_, [], 0).
 count(E, [E | T], N) :- count(E, T, NT),
                         N is NT + 1.
@@ -61,12 +49,14 @@ count_list(E, [H|T], N) :-
     N is HN + TN.
 
 % read_number(_,_,_):.
+% Read the number from whithin a menu range.
 read_number(Min,Max,Number):-
     format('Option [~d-~d]: ', [Min, Max]),
     read(Number),nl,
     number(Number),
     Number =< Max, Number >= Min.
 
+% if the user type a wrong Number from the current menu ask again for the input.
 read_number(Min,Max,Number):- 
     write('\nInvalid option! \nChoose an option from the current menu'),nl,
     read_number(Min, Max, Number).
