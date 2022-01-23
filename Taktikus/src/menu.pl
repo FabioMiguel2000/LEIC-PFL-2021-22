@@ -60,7 +60,7 @@ menu_pxp(0):-
 % Choose Size, Starting Game
 menu_pxp(Size):-
     initial_state(Size, GameState),
-    game_loop(GameState).
+    player_player_gameloop(GameState).
 
 % When facing another player    
 menu_game(1):-
@@ -90,7 +90,7 @@ menu_pxc(Size):-
     pxc_choose_play(Opt),
     pxc_bot(Opt),
     initial_state(Size, GameState),
-    computer_player_game(GameState).
+    computer_player_gameloop(GameState).
 
 pxc_choose_play(Opt):-
     menu_formater('Which player would you like to be ?'),

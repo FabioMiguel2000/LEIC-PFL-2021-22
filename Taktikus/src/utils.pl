@@ -36,18 +36,6 @@ numberLetter(9, 'i').
 numberLetter(9, 'I').
 numberLetter(9, '9').
 
-% Convert ASCII code to its respective decimal number
-/*ascii_convert(48, 0).
-ascii_convert(49, 1).
-ascii_convert(50, 2).
-ascii_convert(51, 3).
-ascii_convert(52, 4).
-ascii_convert(53, 5).
-ascii_convert(54, 6).
-ascii_convert(55, 7).
-ascii_convert(56, 8).
-ascii_convert(57, 9).*/
-
 count(_, [], 0).
 count(E, [E | T], N) :- count(E, T, NT),
                         N is NT + 1.
@@ -106,3 +94,62 @@ index_increment_by_direction(left, _, 1, 0, 0):-
 
 index_increment_by_direction(left, RowIndex, ColIndex, RowIndex, ColIndex2):-
     !,ColIndex2 is ColIndex - 1.
+
+
+% Example game states for testing purposes
+gamestate_example_1([
+[[white,white,white,white,white,white,white,white],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[black,black,black,black,black,black,black,black]]
+|white]).
+
+gamestate_example_2([
+[[empty,white,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,black,empty,empty,empty,empty],
+[empty,white,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,black,empty,empty,empty,empty,empty]]
+|black]).
+
+gamestate_example_3([
+[[empty,empty,empty,empty,white,empty,empty,empty],
+[empty,empty,black,empty,empty,empty,empty,empty],
+[empty,white,empty,white,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,black,empty,empty,empty,empty,empty]]
+|black]).
+
+
+gamestate_example_4([
+[[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,black,empty,empty,empty,empty,empty],
+[empty,white,empty,empty,empty,empty,empty,empty],
+[empty,white,empty,empty,empty,empty,empty,empty],
+[empty,white,empty,empty,empty,empty,empty,empty],
+[empty,black,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty]]
+|black]).
+
+
+gamestate_example_5([
+[[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,white,black,empty,empty,empty,empty,empty],
+[empty,empty,empty,white,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty]]
+|white]).
