@@ -4,6 +4,7 @@ dificulty(2, 'Normal').
 
 % logo/0, prints the game logo.
 logo:-
+    nl,nl,nl,nl,
     write('***********************************************************************************'),nl,
     write('*                                                                                 *'),nl,
     write('*  @@@@@@@@   @@@     @@    @@  @@@@@@@@@  @@  @@    @@  @@      @@     @@@@@@    *'),nl,
@@ -58,12 +59,17 @@ menu_pxp(0):-
 % Choose Size, Starting Game
 menu_pxp(Size):-
     initial_state(Size, GameState),
-    game_loop(GameState).
+    player_player_gameloop(GameState).
 
 % When facing another player    
 menu_game(1):-
     board_selection(Size),
     menu_pxp(Size).
+
+% When facing the computer
+menu_game(2):-
+    board_selection(Size),
+    menu_pxc(Size).
 
 % Selects the size of the board   
 board_selection(Size):-
@@ -75,11 +81,6 @@ board_selection(Size):-
     format('Please select a value between ~d and ~d',[3,9]),nl,
     read_number(0,9,Size).
 
-% When facing the computer
-menu_game(2):-
-    board_selection(Size),
-    menu_pxc(Size).
-
 menu_pxc(0):-
     menu_pxp(0).
 
@@ -88,7 +89,7 @@ menu_pxc(Size):-
     pxc_choose_play(Opt),
     pxc_bot(Opt),
     initial_state(Size, GameState),
-    computer_player_game(GameState).
+    computer_player_gameloop(GameState).
 
 pxc_choose_play(Opt):-
     menu_formater('Which player would you like to be ?'),

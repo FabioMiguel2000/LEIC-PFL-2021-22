@@ -58,7 +58,7 @@ read_number(Min,Max,Number):-
 
 % if the user type a wrong Number from the current menu ask again for the input.
 read_number(Min,Max,Number):- 
-    write('\nInvalid option! \nChoose an option from the current menu'),nl,
+    write('\e[0;91m\nInvalid option! \nChoose an option from the current menu\n\e[0;39m'),nl,
     read_number(Min, Max, Number).
 
 % index_increment_by_direction(+DirectionType, +RowIndex, +ColIndex, -RowIndex2, ColIndex2)
@@ -96,3 +96,62 @@ index_increment_by_direction(left, _, 1, 0, 0):-
 
 index_increment_by_direction(left, RowIndex, ColIndex, RowIndex, ColIndex2):-
     !,ColIndex2 is ColIndex - 1.
+
+
+% Example game states for testing purposes
+gamestate_example_1([
+[[white,white,white,white,white,white,white,white],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[black,black,black,black,black,black,black,black]]
+|white]).
+
+gamestate_example_2([
+[[empty,white,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,black,empty,empty,empty,empty],
+[empty,white,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,black,empty,empty,empty,empty,empty]]
+|black]).
+
+gamestate_example_3([
+[[empty,empty,empty,empty,white,empty,empty,empty],
+[empty,empty,black,empty,empty,empty,empty,empty],
+[empty,white,empty,white,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,black,empty,empty,empty,empty,empty]]
+|black]).
+
+
+gamestate_example_4([
+[[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,black,empty,empty,empty,empty,empty],
+[empty,white,empty,empty,empty,empty,empty,empty],
+[empty,white,empty,empty,empty,empty,empty,empty],
+[empty,white,empty,empty,empty,empty,empty,empty],
+[empty,black,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty]]
+|black]).
+
+
+gamestate_example_5([
+[[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,white,black,empty,empty,empty,empty,empty],
+[empty,empty,empty,white,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty,empty]]
+|white]).

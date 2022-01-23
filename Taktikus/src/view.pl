@@ -3,17 +3,25 @@ ui(white, 10112).
 ui(empty, 43).
 
 :- dynamic(move_counter/1).
+:- dynamic(end_game/1).
 
 move_counter(1).
+end_game(false).
 
 % Displays the gameBoard given by <GameState>
 % display_game(+GameState)
 display_game([GameBoard|PlayerTurn]):-
+    end_game(Condition),
+    Condition = false,
+    !,
     write('\n\n'),
     display_board(GameBoard),
     write('\n\n'),
     display_player_turn(PlayerTurn).
 
+display_game([GameBoard|_]):-
+    write('\n\n'),
+    display_board(GameBoard).
 
 % visually outputs on the CLI the current player to make the move
 display_player_turn(black):-
@@ -230,6 +238,14 @@ log_movement_msg(PlayerTurn, Row,Column,NewRow,NewColumn):-
 
 log_invalid_move:-
     write('\e[0;91m\nWarning: Invalid Move!\e[0;39m\nPlease input in the format:\n<src column><src row><dest column><dest row>, (e.g a1a4)\n\n').
+
+log_winner(black):-
+    nl,
+    print_banner("Congrats! Player Black has won the game!", '*', 6),nl,nl.
+
+log_winner(white):-
+    nl,
+    print_banner("Congrats! Player White has won the game!", '*', 6),nl,nl.
 
 
 % Below are functions that were made during the PFL pratical lessons, on paper 3 exercise 4.
