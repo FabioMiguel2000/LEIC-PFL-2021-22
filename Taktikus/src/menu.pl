@@ -1,4 +1,4 @@
-# :- include('game.pl').
+@ :- include('game.pl').
 
 % dificulty(+Code, -Difficulty) returns the difficulty of the game associated with a code.
 dificulty(1, 'Easy').
@@ -6,13 +6,18 @@ dificulty(2, 'Normal').
 
 % logo/0, prints the game logo.
 logo:-
-    write('  ########   ###     ##    ##   ##  ######## ##     ##    #######  \n'),
-    write('     ##     ## ##    ##   ##    ##     ##    ##     ##   ##    ##   \n'),
-    write('     ##    ##   ##   ##  ##     ##     ##    ##     ##   ##         \n'),
-    write('     ##   ##     ##  #####      ##     ##    ##     ##    #####     \n'),
-    write('     ##   #########  ##  ##     ##     ##    ##     ##        ##    \n'),
-    write('     ##   ##     ##  ##   ##    ##     ##    ##     ##  ##    ##    \n'),
-    write('     ##   ##     ##  ##    ##   ##     ##     #######   #######     \n').
+    write('***********************************************************************'),nl,
+    write('*                                                                     *'),nl,
+    write('*  @@@@@@@@   @@@     @@    @@   @@  @@@@@@@@ @@     @@    @@@@@@@    *'),nl,
+    write('*     @@     @@ @@    @@   @@    @@     @@    @@     @@   @@    @@    *'),nl,
+    write('*     @@    @@   @@   @@  @@     @@     @@    @@     @@   @@          *'),nl,
+    write('*     @@   @@     @@  @@@@@      @@     @@    @@     @@    @@@@@      *'),nl,
+    write('*     @@   @@@@@@@@@  @@  @@     @@     @@    @@     @@        @@     *'),nl,
+    write('*     @@   @@     @@  @@   @@    @@     @@    @@     @@  @@    @@     *'),nl,
+    write('*     @@   @@     @@  @@    @@   @@     @@     @@@@@@@   @@@@@@@      *'),nl,
+    write('*                                                                     *'),nl,
+    write('***********************************************************************'),nl.
+
 
 % menu_formater(+Info) prints the information of to be used within our menu using format.
 menu_formater(Info):-
@@ -29,8 +34,8 @@ menu:-
     option(1, 'Player x Player'),
     option(2, 'Player x Computer'),
     option(3, 'Intructions'),
-    option(0, 'EXIT'),
-    menu_formater('*'),
+    option(0, 'Exit'),
+    menu_formater('**'),
     read_number(0,2,Number),
     menu_option(Number).
 
