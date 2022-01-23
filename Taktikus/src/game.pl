@@ -3,6 +3,7 @@
 :- consult('moves.pl').
 :- consult('capture.pl').
 :- consult('utils.pl').
+:- consult('menu.pl').
 
 
 :- use_module(library(between)).
@@ -22,18 +23,18 @@ game_over(false).       % game over flag, change to true when a game over condit
 
 % main function that begins the game
 play:- menu.
-    # bot(Bot),
-    # Bot = false,
-    # !,
-    # menu(Size),
-    # initial_state(Size, GameState),
-    # game_loop(GameState).
+    % bot(Bot),
+    % Bot = false,
+    % !,
+    % menu(Size),
+    % initial_state(Size, GameState),
+    % game_loop(GameState).
 
-# % with bot player
-# play:-
-#     game_board_size(Size),
-#     initial_state(Size, GameState),
-#     computer_player_game(GameState).
+ % with bot player
+% play:-
+%     game_board_size(Size),
+%     initial_state(Size, GameState),
+%     computer_player_game(GameState).
 
 % Bot Turn
 computer_player_game([GameBoard|PlayerTurn]):-

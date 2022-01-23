@@ -23,7 +23,7 @@ option(Option, Details):-
     format('*~t~d~t~5|~t~a~t~20+~t*~30|~n',[Option, Details]).
 
 % menu/0 presents a user friendly menu for game options.
-menu(Size):-
+menu:-
     logo,
     menu_formater('MENU'),
     option(1, 'Player x Player'),
