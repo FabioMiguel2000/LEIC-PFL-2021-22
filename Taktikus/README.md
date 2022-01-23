@@ -1,6 +1,6 @@
 # Taktikus
 
-Taktikus is a chess-like game based, where two players attempts to get each other marbles until one of the players has only one marble left.
+Taktikus is a strategy game in chess-like fashion, where two players attempts to get each other marbles until one of the players has only one marble left.
 
 ## Game Rules
 - Played by 2 players (white and black, respectively)
@@ -140,9 +140,11 @@ The capture can occour if horizontally or vertically:
 
 ### Conslusions
 
-The change of Haskell to Prolog was a bit challenging and the ammount of time we had for this second project as also short but, prolog seems to be a simpler logic language when compared to haskell, specially if you start looking at prolog as you look to a database.
+The change from Haskell to Prolog was a bit challenging and the ammount of time we had for this second project as also short but, prolog seems to be a simpler logic language when compared to haskell, specially if you start looking at prolog as you look to a database.
 
 Nevertheless, the lack of expertise took a huge toll in our development and the lack of knowledge of which components are more importaint the others so we could focus in what could guarantee more points.
+
+As a working student i had quite alot of dificulty to follow the subject in time and to keep up with the rest of the students which lead to a late understanding of what was needed in terms of theoretical and practical knowledge to contribute to the project.
 
 
 ### Bibliography
