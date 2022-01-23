@@ -56,17 +56,16 @@ computer_player_game(GameState):-
 
 % gameloop, ends when game over flag is achieved
 game_loop(GameState):-
-    % game_over(Flag),
-    % Flag = false,
-    % !,
+    game_over(Flag),
+    Flag = false,
+    !,
     display_game(GameState),
     valid_moves(GameState, ListOfMoves),
     read_user_input(Move, ListOfMoves),
     move(GameState, Move, NewGameState),   
     game_loop(NewGameState).
 
-% game_loop(_):-
-%     write('Game Over!').
+game_loop(_).
 
 % initializes the game state where,
 % GameState = [Board, PlayerTurn]
@@ -152,8 +151,8 @@ move([GameBoard|PlayerTurn], [[Row,Column],[NewRow,NewColumn]], NewGameState):-
     log_movement_msg(PlayerTurn, Row,Column,NewRow,NewColumn),
     %   MISSING FUNCTION HERE! Check if there is a capture
     change_player_turn(PlayerTurn, NewPlayerTurn),
-    game_over(NewGameBoard, NewPlayerTurn),
-    NewGameState = [NewGameBoard|NewPlayerTurn].
+    NewGameState = [NewGameBoard|NewPlayerTurn],
+    game_over(NewGameState, Winner).
 
 % change_board_element([[w,w,w,w,w],[e,e,e,e,e],[e,e,e,e,e],[e,e,e,e,e],[b,b,b,b,b]], 1,3,e,R).
 
@@ -176,14 +175,15 @@ choose_move([GameBoard|PlayerTurn], 1, Move):-
     nth0(RandomMoveIndex, ListOfMoves, Move).
     
 
-game_over(GameBoard, OtherPlayer):- 
-    count_list(OtherPlayer, GameBoard, Pawns),      % Checks if game over condition is met
+game_over([GameBoard|PlayerTurn], Winner):- 
+    count_list(PlayerTurn, GameBoard, Pawns),      % Checks if game over condition is met
     Pawns < 2,      % If game over condition is achieved
     !,
     retract(game_over(false)),
     asserta(game_over(true)),nl,
-    change_player_turn(OtherPlayer, NewPlayerTurn),
-    format("~s player win !", [NewPlayerTurn] ), nl.
+    change_player_turn(PlayerTurn, PreviousPlayerTurn),
+    Winner = PreviousPlayerTurn,
+    format("~s player win !", [PreviousPlayerTurn] ).
 
-game_over(_,_). %If not game over
+game_over(_,none). %If not game over
 

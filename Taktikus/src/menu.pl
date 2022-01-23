@@ -72,9 +72,10 @@ board_selection(Size):-
     menu_formater('Type a Board Size'),
     option(3, 'Will produce a 3x3 board'),
     option(8, 'Will produce a 8x8 board'),
-    option(0, 'EXIT'),
-    menu_formater('*'),
-    read_number_board(0,9,Size).
+    option(0, 'Exit'),
+    menu_formater('*'),nl,
+    format('Please select a value between ~d and ~d',[3,9]),nl,
+    read_number(0,9,Size).
 
 % When facing the computer
 menu_game(2):-
@@ -86,9 +87,23 @@ menu_pxc(0):-
 
 % When player selecs to play angainst machine ai_level(Opt), % Yet to be implemented ??
 menu_pxc(Size):- 
-    bot(black),
+    pxc_choose_play(Opt),
+    pxc_bot(Opt),
     initial_state(Size, GameState),
     computer_player_game(GameState).
+
+pxc_choose_play(Opt):-
+    menu_formater('Which player would you like to be ?'),
+    option(1, 'black'),
+    option(2, 'white'),
+    option(0, 'Exit'),
+    menu_formater('*'),nl,
+    read_number(0,2,Opt).
+
+pxc_bot(1):-retract(bot(black)), assert(bot(white)).
+pxc_bot(2):-bot(black).
+
+
 
     
 

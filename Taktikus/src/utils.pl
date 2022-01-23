@@ -37,7 +37,7 @@ numberLetter(9, 'I').
 numberLetter(9, '9').
 
 % Convert ASCII code to its respective decimal number
-ascii_convert(48, 0).
+/*ascii_convert(48, 0).
 ascii_convert(49, 1).
 ascii_convert(50, 2).
 ascii_convert(51, 3).
@@ -46,7 +46,7 @@ ascii_convert(53, 5).
 ascii_convert(54, 6).
 ascii_convert(55, 7).
 ascii_convert(56, 8).
-ascii_convert(57, 9).
+ascii_convert(57, 9).*/
 
 count(_, [], 0).
 count(E, [E | T], N) :- count(E, T, NT),
@@ -63,29 +63,13 @@ count_list(E, [H|T], N) :-
 % read_number(_,_,_):.
 read_number(Min,Max,Number):-
     format('Option [~d-~d]: ', [Min, Max]),
-    get_code(Ascii),
-    peek_char(Char),
-    Char == '\n',
-    ascii_convert(Ascii, Number),
+    read(Number),nl,
+    number(Number),
     Number =< Max, Number >= Min.
 
 read_number(Min,Max,Number):- 
-    format('\nNot valid ! \nChoose a number in the range [~d-~d]: ', [Min, Max]),nl,
+    write('\nInvalid option! \nChoose an option from the current menu'),nl,
     read_number(Min, Max, Number).
-
-read_number_board(Min,Max,Number):-
-    format('Option [~d-~d]: ', [Min, Max]),
-    get_code(Ascii),
-    peek_char(Char),
-    Char == '\n',
-    ascii_convert(Ascii, Number),
-    Number =< Max, Number >= Min.
-
-
-read_number_board(Min,Max,Number):-
-    format('\nNumber not valid ! \nChoose a number in the range [~d-~d]: ', [Min+3, Max]),nl,
-    read_number_board(Min, Max, Number).
-
 
 % index_increment_by_direction(+DirectionType, +RowIndex, +ColIndex, -RowIndex2, ColIndex2)
 % Depending on the type of direction, increments the index to loop through the board.
