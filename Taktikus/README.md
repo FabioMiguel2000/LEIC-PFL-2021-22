@@ -52,13 +52,13 @@ In the `initial_state(+Size, -GameState)` predicate, an initial gameboard is gen
 The view of the game is output by the predicate `display_game(+GameState)`, where it loops through the `GameBoard` cell by cell and outputs the respective element, and then outputs the player that has to make a move in the current turn.
 
 
-![main menu](./files/menu.png)
+![main menu](./img/menu.png)
 
 #### **Player x Player**
 
 After choosing the size of the square board the game will begin being the player one the one to control the white marblers and player 2 the one to control the black marbles.
 
-![menu_board](./files/select_board.png)
+![menu_board](./img/select_board.png)
 
 #### **Player x Computer**
 
@@ -66,11 +66,11 @@ After choosing the square board size like in the first option now we need to cho
 
 If the player choose to be black, then the computer will make it's first move and the game will begin soon after that.
 
-![menu computer](./files/choose_player_x_computer.png)
+![menu computer](./img/choose_player_x_computer.png)
 
 After every movement, being that from the player or the computer, we have presented in the screen the current movement with a marble initial position and last position.
 
-![menu computer](./files/8x8_board.png)
+![menu computer](./img/8x8_board.png)
 
 ### Movement
  Each turn a player is asked to input their movement, the input should be similar to the standard method for recording and describing the *moves in a game of chess for a pawn* (e.g. to move a piece on position B1 to B3, input `b1b3.`, everything together without spaces)
@@ -114,11 +114,11 @@ For validation of game over, we used a combination of verification in the Board 
 
 The capture can occour if horizontally or vertically: 
 -  you position your marble in between two enemy marbles
-![menu computer](./files/black_before.png)
-![menu computer](./files/black_win.png)
+![menu computer](./img/black_before.png)
+![menu computer](./img/black_win.png)
 - you position two of your marbles around an enemy marble.
-![menu computer](./files/white_before.png)
-![menu computer](./files/white_win.png)
+![menu computer](./img/white_before.png)
+![menu computer](./img/white_win.png)
 
 
 ### Conslusions
