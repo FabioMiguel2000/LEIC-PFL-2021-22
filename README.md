@@ -1,9 +1,13 @@
 # Functional and Logic Programming 
 
 ## Course Information:
+Institution: FEUP
+
 Code: L.EIC024
 
 Acronym: PFL
+
+Tools Used: Haskell, Sicstus Prolog
 
 ### Objetives:
 - Acquire familiarity with the paradigms of Functional Programming and Logic Programming. 
@@ -18,3 +22,5 @@ Acronym: PFL
 - Understand the model of running programs in Prolog
 - Model search problems as logic programs and queries in Prolog
 
+
+More Detail: [Sigarra](https://sigarra.up.pt/feup/pt/ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484434)
