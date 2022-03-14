@@ -26,5 +26,5 @@ Tools Used: Haskell, Sicstus Prolog
 
 - [Fabio Huang](https://github.com/FabioMiguel2000)
 - [Victor Laureano](https://github.com/laureansvictor)
-- 
+
 More Detail: [Sigarra](https://sigarra.up.pt/feup/pt/ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484434)
