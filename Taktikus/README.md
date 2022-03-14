@@ -7,7 +7,7 @@ Taktikus is a strategy game in chess-like fashion, where two players attempts to
 - On a 8x8 chess-like board (with no colors)
 - Each player starts with 8 pieces in their first row
 - Each turn a player moves one piece (let white start)
-- The pieces have a rook-like movement (diagonal or horizontal as far as the player want), but cannot jump over a piece (either color)
+- The pieces have a rook-like movement (vertical or horizontal as far as the player want), but cannot jump over a piece (either color)
 - The objective is to capture the opponent's pieces
 - Capturing occurs in 2 ways:
     1. by capturing one or more of the opponents marbles (in an unbroken row or column) between two of one’s own marbles. 
@@ -121,7 +121,7 @@ The capture can occour if horizontally or vertically:
 ![menu computer](./img/white_win.png)
 
 
-### Conslusions
+### Conclusions
 
 The change from Haskell to Prolog was a bit challenging and the ammount of time we had for this second project as also short but, prolog seems to be a simpler logic language when compared to haskell, specially if you start looking at prolog as you look to a database.
 
