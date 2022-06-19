@@ -22,6 +22,19 @@ Tools Used: Haskell, Sicstus Prolog
 - Understand the model of running programs in Prolog
 - Model search problems as logic programs and queries in Prolog
 
+### Projects Developed
+
+<table>
+   <tr>
+    <th>Big Numbers</th>
+    <th>Taktikus</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/FabioMiguel2000/LOA-feat.Reinforcement-Learning/blob/main/img/random_5x5.gif" alt=""></td>
+    <td><img src="https://github.com/FabioMiguel2000/LOA-feat.Reinforcement-Learning/blob/main/img/ppo_5x5.gif" alt=""></td>
+  </tr>
+</table>
+
 ### Project Group Members:
 
 - [Fabio Huang](https://github.com/FabioMiguel2000)
